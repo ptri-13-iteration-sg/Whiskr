@@ -1,19 +1,19 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '@mui/material';
+// Modules
+import React from "react";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <header className='navbar'>
-      <Link to='/'>
+    <header className="navbar">
+      <Link to="/">
         <h1>Whiskr</h1>
       </Link>
 
-      <div className='navbar-right'>
+      <div className="navbar-right">
         <h4>Safety</h4>
         <h4>Support</h4>
 
-        <Link to='/about'>
+        <Link to="/about">
           <h4>About</h4>
         </Link>
       </div>

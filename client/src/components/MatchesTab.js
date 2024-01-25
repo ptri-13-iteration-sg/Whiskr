@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+// Modules
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const MatchesTab = () => {
   // Mock data
@@ -19,15 +20,15 @@ const MatchesTab = () => {
   const [matches, setMatches] = useState([]);
 
   useEffect(() => {
-    console.log('* Fetching matches from db...');
+    console.log("* Fetching matches from db...");
     // Use an async function inside useEffect to fetch data
     const fetchMatches = async () => {
       try {
-        const matches = await axios.get('/api/matches');
+        const matches = await axios.get("/api/matches");
         setMatches(matches.data);
-        console.log('* Retrieved matches from db:', matches.data);
+        console.log("* Retrieved matches from db:", matches.data);
       } catch (error) {
-        console.error('Error retrieving matches:', error);
+        console.error("Error retrieving matches:", error);
       }
     };
 
@@ -35,9 +36,9 @@ const MatchesTab = () => {
   }, []); // Empty dependency array ensures useEffect runs once after initial render
 
   return (
-    <div className='matches-tab'>
-      {matches.map(match => (
-        <div className='matches'>
+    <div className="matches-tab">
+      {matches.map((match) => (
+        <div className="matches">
           <p>{match.name}</p>
           <img src={match.imageUrl}></img>
         </div>

@@ -1,9 +1,11 @@
-const router = require('express').Router();
-const path = require('path');
-const userController = require('../controllers/userController');
-const cookieControllers = require('../controllers/cookieControllers')
+// Modules
+const router = require("express").Router();
 
-router.post('/', userController.createUser, cookieControllers.setCookie, (req, res) => {
+// Controller Files
+const userController = require("../controllers/userController.js");
+const cookieController = require("../controllers/cookieController.js");
+
+router.post("/", userController.createUser, cookieController.setCookie, (req, res) => {
   return res.status(200).json(res.locals._id);
 });
 

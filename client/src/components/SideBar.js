@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-// import axios from 'axios';
-import MatchesTab from './MatchesTab';
-import MessagesTab from './MessagesTab';
+// Modules
+import React, { useState } from "react";
+
+// Components
+import MatchesTab from "./MatchesTab.js";
+import MessagesTab from "./MessagesTab.js";
 
 const SideBar = () => {
   // track state of matches tab and messages tab
@@ -9,8 +11,8 @@ const SideBar = () => {
   const [showMessagesTab, setShowMessagesTab] = useState(false);
 
   return (
-    <div className='side-bar'>
-      <div className='match-msg-buttons'>
+    <div className="side-bar">
+      <div className="match-msg-buttons">
         <button
           onClick={() => {
             setShowMatchesTab(true);

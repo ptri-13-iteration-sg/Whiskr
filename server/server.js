@@ -1,12 +1,13 @@
-const path = require('path');
-const express = require('express');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv'); // NOTE Line 1
-const cookieParser = require('cookie-parser');
+// Modules
+const express = require("express");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv"); // NOTE Line 1
+const cookieParser = require("cookie-parser");
 
-const loginRoute = require('./routes/loginRoutes');
-const signupRoute = require('./routes/signupRoutes.js');
-const apiRoute = require('./routes/apiRoutes.js');
+// Route Files
+const loginRoutes = require("./routes/loginRoutes.js");
+const signupRoutes = require("./routes/signupRoutes.js");
+const apiRoutes = require("./routes/apiRoutes.js");
 
 dotenv.config(); // NOTE Line 2
 const app = express();
@@ -33,22 +34,22 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
     // sets the name of the DB that our collections are part of
-    dbName: 'whiskr',
+    dbName: "whiskr",
   })
-  .then(() => console.log('* Connected to Mongo DB.'))
-  .catch(err => console.log(err));
+  .then(() => console.log("* Connected to Mongo DB."))
+  .catch((err) => console.log(err));
 
 // Route handlers
-app.use('/api', apiRoute);
-app.use('/signup', signupRoute);
-app.use('/login', loginRoute);
+app.use("/api", apiRoutes);
+app.use("/signup", signupRoutes);
+app.use("/login", loginRoutes);
 
 // Global error handler
 app.use((err, req, res, next) => {
   const defaultErr = {
-    log: 'Express error handler caught unknown middleware error',
+    log: "Express error handler caught unknown middleware error",
     status: 500,
-    message: { err: 'An error occurred' },
+    message: { err: "An error occurred" },
   };
   const errorObj = Object.assign({}, defaultErr, err);
   console.log(`> ${errorObj.log} -> ${errorObj.message.err}`);
