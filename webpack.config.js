@@ -52,7 +52,7 @@ module.exports = {
     compress: true,
     port: process.env.DEV_PORT,
     proxy: {
-      "/": {
+      "/api": {
         target: `http://localhost:${process.env.SERV_PORT}`,
       },
     },

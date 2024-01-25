@@ -23,7 +23,7 @@ const Login = () => {
 
     // Make POST request to Atlas DB to verify user has an account to log in
     try {
-      const loginRes = await axios.post("/login", userCredentials);
+      const loginRes = await axios.post("api/login", userCredentials);
 
       console.log("* Login response from server: ", loginRes);
       setRes(`User has created an Adopter or Cat Profile: ${loginRes.data}.`);
@@ -34,7 +34,7 @@ const Login = () => {
         console.log("* User has not created an adopter or cat profile yet");
         // Navigate to the create Adopter or create Cat Profile page depending on the user's selection when they registered their account
         const userAccountType = await axios.post(
-          "/login/getAccountType",
+          "api/login/getAccountType",
           userCredentials
         );
         console.log("* User account type: ", userAccountType.data);
@@ -43,7 +43,7 @@ const Login = () => {
       } else {
         console.log("* User already created an adopter or cat profile");
         const userAccountType = await axios.post(
-          "/login/getAccountType",
+          "api/login/getAccountType",
           userCredentials
         );
         console.log("* User account type: ", userAccountType.data);

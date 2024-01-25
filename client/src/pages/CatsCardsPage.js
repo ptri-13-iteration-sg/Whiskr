@@ -10,14 +10,16 @@ const CatDashboard = () => {
   const [characters, setCharacters] = useState([]);
   const [lastDirection, setLastDirection] = useState();
 
-  const updateMatches = async () => {};
+  // const updateLikesFindMatches = async (profileId) => {
+  //   axios.patch({ _id: profileId });
+  // };
 
   const swiped = (direction, swipedProfileId) => {
-    console.log(`* Swiped ${direction} on ${nameToDelete}`);
+    console.log(`* Swiped ${direction} on ${swipedProfileId}`);
 
-    if (direction === "right") {
-      updateMatches(swipedProfileId);
-    }
+    //   if (direction === "right") {
+    //     updateLikesFindMatches(swipedProfileId);
+    //   }
 
     setLastDirection(direction);
   };
@@ -30,7 +32,7 @@ const CatDashboard = () => {
     // Use an async function inside useEffect to fetch data
     const fetchData = async () => {
       try {
-        const response = await axios.get("/api/cats");
+        const response = await axios.get("api/getCards/cats");
         setCharacters(response.data);
         console.log("* Retrieved cats from db:", response.data);
       } catch (error) {

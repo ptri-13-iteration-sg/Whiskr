@@ -1,6 +1,6 @@
 /* --- REUSEABLE ELEMENTS - USED ON MORE THAN ONE PAGE --- */
 body::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   right: 0;
@@ -16,12 +16,11 @@ body {
   margin: 0;
   color: white;
   text-shadow: 2px 0 0 #000, 0 -1px 0 #000, 0 2px 0 #000, -2px 0 0 #000;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-image: url('../assets/cat-wallpaper.png');
+  background-image: url("../assets/cat-wallpaper.png");
 }
 
 .navbar {
@@ -94,7 +93,7 @@ select {
   position: absolute;
   top: 550px;
   /* Styling */
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
   font-size: 16px;
   color: rgb(0, 199, 53);
   background: black;
@@ -106,7 +105,7 @@ select {
   position: absolute;
   top: 550px;
   /* Styling */
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
   font-size: 16px;
   color: rgb(255, 124, 124);
   background: black;
@@ -305,7 +304,7 @@ select {
 .card-container {
   /* Positioning */
   position: absolute;
-  top: 20vh;
+  top: 5vh;
   left: 50vw;
   /* Sizing */
   width: 90vw;
@@ -365,7 +364,7 @@ select {
 }
 
 .card-fetched-data {
-  font-family: 'Franklin Gothic Medium';
+  font-family: "Franklin Gothic Medium";
   font-size: 16px;
   margin-top: 8px;
   margin-bottom: 30px;

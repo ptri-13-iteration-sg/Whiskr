@@ -25,7 +25,7 @@ const Signup = () => {
 
     // Make POST request to Atlas DB to add new user
     try {
-      const userResponse = await axios.post("/signup", newUser);
+      const userResponse = await axios.post("api/signup", newUser);
 
       console.log("* New user profile created, _id: ", userResponse.data);
 

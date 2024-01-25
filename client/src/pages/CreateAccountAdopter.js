@@ -28,7 +28,10 @@ const CreateAccountAdopter = () => {
     console.log("* Profile to be added to db: ", newAdopter);
 
     try {
-      const adopterResponse = await axios.post("/login/createAdopterProfile", newAdopter);
+      const adopterResponse = await axios.post(
+        "api/login/createAdopterProfile",
+        newAdopter
+      );
 
       if (adopterResponse) {
         console.log("* New adopter profile created, _id: ", adopterResponse.data);
