@@ -8,6 +8,7 @@ dotenv.config();
 module.exports = {
   entry: path.join(__dirname, "./client/src/", "index.js"),
   output: {
+    filename: "bundle.js", // NOTE Specified name 'bundle.js' for when webpack builds app and generates a bundle containing all modules and dependencies
     path: path.resolve(__dirname, "build"),
   },
   mode: process.env.MODE,
@@ -47,7 +48,7 @@ module.exports = {
       directory: path.join(__dirname, "/build"),
       publicPath: "/",
     },
-    hot: true,
+    hot: true, // enables Hot Module Replacement
     historyApiFallback: true,
     compress: true,
     port: process.env.DEV_PORT,
