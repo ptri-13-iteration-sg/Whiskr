@@ -7,6 +7,7 @@ module.exports = {
   entry: path.join(__dirname, './client/src/', 'index.js'),
   output: {
     path: path.resolve(__dirname, 'build'),
+    publicPath: '/',
   },
   mode: process.env.MODE,
   module: {
@@ -41,21 +42,21 @@ module.exports = {
       template: path.join(__dirname, './client/public', 'index.html'),
     }),
   ],
-  devServer: {
-    static: {
-      directory: path.join(__dirname, '/build'),
-      publicPath: '/',
-    },
-    hot: true,
-    historyApiFallback: true,
-    compress: true,
-    port: process.env.DEV_PORT,
-    proxy: {
-      '/': {
-        target: `http://localhost:3000`,
-      },
-    },
-  },
+  // devServer: {
+  //   static: {
+  //     directory: path.join(__dirname, '/build'),
+  //     publicPath: '/',
+  //   },
+  //   hot: true,
+  //   historyApiFallback: true,
+  //   compress: true,
+  //   port: process.env.DEV_PORT,
+  //   proxy: {
+  //     '/': {
+  //       target: `http://localhost:3000`,
+  //     },
+  //   },
+  // },
   resolve: {
     extensions: ['.js', '.jsx'],
   },
@@ -63,5 +64,18 @@ module.exports = {
     hints: false,
     maxEntrypointSize: 512000,
     maxAssetSize: 512000,
+  },
+  devServer: {
+    port: 8080,
+    open: true,
+    proxy: {
+      '/': 'http://localhost:3000',
+    },
+    historyApiFallback: true,
+
+    static: {
+      directory: path.resolve(__dirname, 'build'),
+      publicPath: '/build/',
+    },
   },
 };
