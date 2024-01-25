@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Button } from '@mui/material';
 
 const Navbar = () => {
+
+  
   return (
     <header className='navbar'>
       <Link to='/'>
@@ -10,6 +12,7 @@ const Navbar = () => {
       </Link>
 
       <div className='navbar-right'>
+        <h4 onClick={()=>{alert('Hi there')}}>Chat</h4>
         <h4>Safety</h4>
         <h4>Support</h4>
 

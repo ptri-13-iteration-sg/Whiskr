@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv'); // NOTE Line 1
 const cookieParser = require('cookie-parser');
+const { createServer } = require('node:http');
 
 const loginRoute = require('./routes/loginRoutes');
 const signupRoute = require('./routes/signupRoutes.js');
@@ -13,6 +14,9 @@ const app = express();
 
 // Configs
 const PORT = process.env.SERV_PORT;
+
+//Create server
+const server = createServer(app);
 
 app.use(express.json());
 // app.use(express.static(path.resolve(__dirname, '../build')));
@@ -56,7 +60,7 @@ app.use((err, req, res, next) => {
 });
 
 // Turn computer into a server and listen for incoming reqs
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`* Server listening @ http://localhost:${PORT}`);
 });
 
