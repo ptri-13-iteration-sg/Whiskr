@@ -1,13 +1,13 @@
 {
+  "prettier": {
+    "printWidth": 90
+  },
   "scripts": {
     "build": "webpack",
     "dev": "cross-env NODE_ENV=development concurrently \"nodemon --watch server ./server/server.js\" \"webpack serve --open\""
   },
   "dependencies": {
-    "@emotion/react": "^11.11.3",
-    "@emotion/styled": "^11.11.0",
-    "@mui/icons-material": "^5.15.2",
-    "@mui/material": "^5.15.2",
+    "cross-env": "^7.0.3",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -16,7 +16,6 @@
     "bcryptjs": "^2.3.0",
     "concurrently": "^8.2.2",
     "cookie-parser": "^1.4.6",
-    "cross-env": "^7.0.3",
     "dotenv": "^16.3.1",
     "dotenv-webpack": "^8.0.1",
     "express": "^4.18.2",

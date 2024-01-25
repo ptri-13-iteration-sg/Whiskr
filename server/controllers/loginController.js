@@ -1,10 +1,10 @@
 const Profile = require('../models/models.js');
-const loginControllers = {};
+const loginController = {};
 
 const bcrypt = require('bcryptjs');
 
 // Log in user
-loginControllers.verifyUser = async (req, res, next) => {
+loginController.verifyUser = async (req, res, next) => {
   console.log('* Handling logging user in...');
 
   try {
@@ -13,7 +13,7 @@ loginControllers.verifyUser = async (req, res, next) => {
     // Handle missing fields
     if ((!email, !password)) {
       const missingFieldsErr = {
-        log: 'Express error handler caught loginControllers.verifyUser error',
+        log: 'Express error handler caught loginController.verifyUser error',
         status: 400,
         message: { err: 'Missing required fields' },
       };
@@ -25,7 +25,7 @@ loginControllers.verifyUser = async (req, res, next) => {
     if (foundUser) console.log('  - User found in db: ', foundUser);
     else {
       const userDneErr = {
-        log: 'Express error handler caught loginControllers.verifyUser error',
+        log: 'Express error handler caught loginController.verifyUser error',
         status: 400,
         message: { err: 'Email does not exist in db' },
       };
@@ -42,19 +42,19 @@ loginControllers.verifyUser = async (req, res, next) => {
       return next();
     } else {
       const invalidPasswordErr = {
-        log: 'Express error handler caught loginControllers.loginUser error',
+        log: 'Express error handler caught loginController.loginUser error',
         status: 400,
         message: { err: 'Invalid password entered' },
       };
       return next(invalidPasswordErr);
     }
   } catch (err) {
-    return next('Error in loginControllers.verifyUser: ' + JSON.stringify(err));
+    return next('Error in loginController.verifyUser: ' + JSON.stringify(err));
   }
 };
 
 // Verify if the logged in user has an Adopter profile or Cat profile
-loginControllers.verifyAdopterOrCat = async (req, res, next) => {
+loginController.verifyAdopterOrCat = async (req, res, next) => {
   console.log(
     '* Handling verifying if user has created an adopter profile or cat profile yet...'
   );
@@ -101,24 +101,26 @@ loginControllers.verifyAdopterOrCat = async (req, res, next) => {
   }
 };
 
-loginControllers.getAccountType = async (req, res, next) => {
-  console.log('* Handling getting account type of user...');
+// Get the account type of the user logging in
+loginController.getAccountType = async (req, res, next) => {
+  console.log('* Handling getting profile type of user...');
 
   try {
     const { email } = req.body;
 
     const foundUser = await Profile.User.findOne({ email: email });
+    console.log(`  - Profile type for ${email}: `, foundUser.profileType);
     res.locals.accountType = foundUser.profileType;
     return next();
   } catch (err) {
     return next(
-      'Error in loginControllers.getAccountType: ' + JSON.stringify(err)
+      'Error in loginController.getAccountType: ' + JSON.stringify(err)
     );
   }
 };
 
 // Register adopter profile
-loginControllers.createAdopter = async (req, res, next) => {
+loginController.createAdopter = async (req, res, next) => {
   console.log('* Handling creating an adopter profile for user...');
 
   const { email, name, aboutMe, imageUrl, profession, experience } = req.body;
@@ -126,7 +128,7 @@ loginControllers.createAdopter = async (req, res, next) => {
   // Handle missing fields - ignores missing imageUrl field
   if (!email || !name || !aboutMe || !profession || !experience) {
     const missingFieldsErr = {
-      log: 'Express error handler caught loginControllers.createAdopter error',
+      log: 'Express error handler caught loginController.createAdopter error',
       status: 400,
       message: { err: 'Missing required fields' },
     };
@@ -151,13 +153,13 @@ loginControllers.createAdopter = async (req, res, next) => {
     return next();
   } catch (err) {
     return next(
-      'Error in loginControllers.createAdopter: ' + JSON.stringify(err)
+      'Error in loginController.createAdopter: ' + JSON.stringify(err)
     );
   }
 };
 
 // Register cat profile
-loginControllers.createCat = async (req, res, next) => {
+loginController.createCat = async (req, res, next) => {
   console.log('* Handling creating an cat profile for user...');
 
   const { email, name, breed, age, aboutMe, imageUrl } = req.body;
@@ -165,7 +167,7 @@ loginControllers.createCat = async (req, res, next) => {
   // Handle missing fields - ignores missing imageUrl field
   if (!email || !name || !breed || !age || !aboutMe) {
     const missingFieldsErr = {
-      log: 'Express error handler caught loginControllers.createCat error',
+      log: 'Express error handler caught loginController.createCat error',
       status: 400,
       message: { err: 'Missing required fields' },
     };
@@ -189,8 +191,8 @@ loginControllers.createCat = async (req, res, next) => {
     res.locals._id = registeredCat._id;
     return next();
   } catch (err) {
-    return next('Error in loginControllers.createCat: ' + JSON.stringify(err));
+    return next('Error in loginController.createCat: ' + JSON.stringify(err));
   }
 };
 
-module.exports = loginControllers;
+module.exports = loginController;

@@ -1,7 +1,7 @@
-import React from 'react';
-import { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios'; // NOTE: JS library used to make HTTP requests from a browser; used here to fetch data (pins) from Atlas db
+// Modules
+import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
   const emailRef = useRef();
@@ -13,7 +13,7 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const userCredentials = {
@@ -23,53 +23,52 @@ const Login = () => {
 
     // Make POST request to Atlas DB to verify user has an account to log in
     try {
-      const loginRes = await axios.post('/login', userCredentials);
+      const loginRes = await axios.post("/login", userCredentials);
 
-      console.log('* Login response from server: ', loginRes);
+      console.log("* Login response from server: ", loginRes);
       setRes(`User has created an Adopter or Cat Profile: ${loginRes.data}.`);
       setErr(null);
 
       // If the user has not created an Adopter or Cat profile yet...
       if (!loginRes.data) {
-        console.log('* User has not created an adopter or cat profile yet');
+        console.log("* User has not created an adopter or cat profile yet");
         // Navigate to the create Adopter or create Cat Profile page depending on the user's selection when they registered their account
         const userAccountType = await axios.post(
-          '/login/getAccountType',
+          "/login/getAccountType",
           userCredentials
         );
-        console.log('* User account type: ', userAccountType.data);
-        if (userAccountType.data === 'Adopter')
-          navigate('/CreateAccountAdopter');
-        else if (userAccountType.data === 'Cat') navigate('/CreateAccountCat');
+        console.log("* User account type: ", userAccountType.data);
+        if (userAccountType.data === "Adopter") navigate("/CreateAccountAdopter");
+        else if (userAccountType.data === "Cat") navigate("/CreateAccountCat");
       } else {
-        console.log('* User already created an adopter or cat profile');
+        console.log("* User already created an adopter or cat profile");
         const userAccountType = await axios.post(
-          '/login/getAccountType',
+          "/login/getAccountType",
           userCredentials
         );
-        console.log('* User account type: ', userAccountType.data);
-        if (userAccountType.data === 'Adopter') navigate('/CatsCardsPage');
-        else if (userAccountType.data === 'Cat') navigate('/AdopterCardsPage');
+        console.log("* User account type: ", userAccountType.data);
+        if (userAccountType.data === "Adopter") navigate("/CatsCardsPage");
+        else if (userAccountType.data === "Cat") navigate("/AdopterCardsPage");
       }
     } catch (err) {
-      console.log('* Error from server: ', err.response.data);
+      console.log("* Error from server: ", err.response.data);
       setRes(null);
       setErr(err.response.data);
     }
   };
 
   return (
-    <div className='login-page'>
-      <form className='login-form' onSubmit={handleSubmit}>
+    <div className="login-page">
+      <form className="login-form" onSubmit={handleSubmit}>
         <h3>Log In</h3>
 
-        <input type='email' placeholder='email' ref={emailRef} />
-        <input type='password' placeholder='password' ref={passwordRef} />
+        <input type="email" placeholder="email" ref={emailRef} />
+        <input type="password" placeholder="password" ref={passwordRef} />
 
-        <button type='submit'>Log in</button>
+        <button type="submit">Log in</button>
       </form>
-      {res && <p className='response-text'>{JSON.stringify(res)}</p>}
-      {err && <p className='error-text'>{err}</p>}
+      {res && <p className="response-text">{JSON.stringify(res)}</p>}
+      {err && <p className="error-text">{err}</p>}
     </div>
   );
 };

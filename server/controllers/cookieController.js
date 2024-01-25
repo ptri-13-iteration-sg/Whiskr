@@ -1,8 +1,8 @@
 const model = require('../models/models.js');
 
-const cookieControllers = {};
+const cookieController = {};
 
-cookieControllers.setCookie = async (req, res, next) => {
+cookieController.setCookie = async (req, res, next) => {
   const email = req.body.email;
   try {
     const user = await model.User.findOne({ email });
@@ -15,4 +15,4 @@ cookieControllers.setCookie = async (req, res, next) => {
   }
 };
 
-module.exports = cookieControllers;
+module.exports = cookieController;
