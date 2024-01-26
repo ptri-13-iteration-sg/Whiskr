@@ -2,10 +2,10 @@ const model = require("../models/models.js");
 const jwt = require("jsonwebtoken");
 const { setJwtCookie, handleServerError } = require("../utils/functions");
 
-const cookieControllers = {};
+const cookieController = {};
 
 //Sets session cookie
-cookieControllers.setCookie = async (req, res, next) => {
+cookieController.setCookie = async (req, res, next) => {
   const { email } = req.body;
   console.log("set cookie req.body->", req.body);
   try {
@@ -26,7 +26,7 @@ cookieControllers.setCookie = async (req, res, next) => {
 
 // Reset session cookie on logout
 
-cookieControllers.deleteCookie = async (req, res, next) => {
+cookieController.deleteCookie = async (req, res, next) => {
   try {
     res.cookie("jwt-cookie", "", {
       httpOnly: true,
@@ -38,4 +38,4 @@ cookieControllers.deleteCookie = async (req, res, next) => {
   }
 };
 
-module.exports = cookieControllers;
+module.exports = cookieController;
