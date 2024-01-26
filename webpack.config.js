@@ -2,12 +2,11 @@
 const path = require("path");
 const dotenv = require("dotenv");
 const HtmlWebpackPlugin = require("html-webpack-plugin"); // generate an HTML file and inject the necessary script tags automatically
-
 dotenv.config();
-
 module.exports = {
   entry: path.join(__dirname, "./client/src/", "index.js"),
   output: {
+    filename: "bundle.js", // NOTE Specified name 'bundle.js' for when webpack builds app and generates a bundle containing all modules and dependencies
     path: path.resolve(__dirname, "build"),
   },
   mode: process.env.MODE,
@@ -47,7 +46,7 @@ module.exports = {
       directory: path.join(__dirname, "/build"),
       publicPath: "/",
     },
-    hot: true,
+    hot: true, // enables Hot Module Replacement
     historyApiFallback: true,
     compress: true,
     port: process.env.DEV_PORT,
@@ -61,8 +60,8 @@ module.exports = {
     extensions: [".js", ".jsx"],
   },
   performance: {
-    hints: false,
-    maxEntrypointSize: 512000,
-    maxAssetSize: 512000,
+    hints: false, // webpack won't emit warnings based on these size limits during the build
+    maxEntrypointSize: 512000, // sets the max size, in bytes, that the entry point (main bundle) file should be before triggering a warning or error
+    maxAssetSize: 512000, // sets the maximum size for individual assets (like images, stylesheets, etc.)
   },
 };
