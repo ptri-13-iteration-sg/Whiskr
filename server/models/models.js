@@ -1,15 +1,15 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+// Modules
+const bcrypt = require("bcryptjs");
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const dotenv = require('dotenv');
 
 dotenv.config();
 
 const SALT_FACTOR = Number(process.env.SALT_WORK_FACTOR);
-console.log(
-  `* Checking properties from '.env' file: \n  - SALT_FACTOR: ${SALT_FACTOR}`
-);
+console.log(`* Checking properties from '.env' file: \n  - SALT_FACTOR: ${SALT_FACTOR}`);
 
+// User Schema
 const userSchema = new Schema({
   email: {
     type: String,
@@ -26,19 +26,21 @@ const userSchema = new Schema({
   },
 });
 
-userSchema.pre('save', function (next) {
-  console.log('* Hashing password before adding user to db...');
+// Hash password before storing in User db...
+userSchema.pre("save", function (next) {
+  console.log("* Hashing password before adding user to db...");
   const user = this;
-  console.log('  - User password: ', user.password);
+  console.log("  - User password: ", user.password);
 
   bcrypt.hash(user.password, SALT_FACTOR, function (err, hash) {
     if (err) return next(err);
     user.password = hash;
-    console.log('  - Hashed user password: ', user.password);
+    console.log("  - Hashed user password: ", user.password);
     return next();
   });
 });
 
+// Adopter Profile Schema
 const adopterSchema = new Schema({
   email: {
     type: String,
@@ -65,8 +67,17 @@ const adopterSchema = new Schema({
     type: String,
     required: true,
   },
+  likes: {
+    type: Array,
+    required: true,
+  },
+  matches: {
+    type: Array,
+    required: true,
+  },
 });
 
+// Cat Profile Schema
 const catSchema = new Schema({
   email: {
     type: String,
@@ -93,17 +104,25 @@ const catSchema = new Schema({
     type: String,
     required: true,
   },
+  likes: {
+    type: Array,
+    required: true,
+  },
+  matches: {
+    type: Array,
+    required: true,
+  },
 });
 
 //Matches schema is for mvp demonstration only
 const matchesSchema = new Schema({
   name: { type: String },
   imageUrl: { type: String },
-})
+});
 
-const User = mongoose.model('User', userSchema);
-const Adopter = mongoose.model('Adopter', adopterSchema);
-const Cat = mongoose.model('Cat', catSchema);
-const Matches = mongoose.model('Matches', matchesSchema);
+const User = mongoose.model("User", userSchema);
+const Adopter = mongoose.model("Adopter", adopterSchema);
+const Cat = mongoose.model("Cat", catSchema);
+const Matches = mongoose.model("Matches", matchesSchema);
 
 module.exports = { User, Adopter, Cat, Matches };

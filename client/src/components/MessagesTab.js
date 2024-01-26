@@ -1,8 +1,9 @@
-import React from 'react';
+// Modules
+import React from "react";
 
 const MessagesTab = () => {
   return (
-    <div className='messages-tab'>
+    <div className="messages-tab">
       <ol>
         <li>cat-owner1@gmail.com: hi!</li>
         <li>cat-owner2@gmail.com: hello!</li>
