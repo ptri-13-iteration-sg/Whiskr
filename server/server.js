@@ -3,7 +3,10 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv"); // NOTE Line 1
 const cookieParser = require("cookie-parser");
+
 const { createServer } = require('node:http');
+const { Server } = require("socket.io");
+const cors = require('cors');
 
 // Route Files
 const loginRoutes = require("./routes/loginRoutes.js");
@@ -22,6 +25,8 @@ const server = createServer(app);
 app.use(express.json());
 // app.use(express.static(path.resolve(__dirname, '../build')));
 app.use(cookieParser());
+app.use(cors());
+
 
 const MONGO_URI = process.env.MONGO_URI;
 console.log(
@@ -47,6 +52,19 @@ mongoose
 app.use("/api", apiRoutes);
 app.use("/signup", signupRoutes);
 app.use("/login", loginRoutes);
+
+//Socket.io 
+const io = new Server(server);
+io.on('connection', (socket) =>{
+
+  socket.on('join_room', (data)=>{
+    socket.join(data);
+  })
+
+  socket.on("send_message", (data) => {
+    socket.to(data.testRoom).emit("receive_message", data);
+  })
+})
 
 // Global error handler
 app.use((err, req, res, next) => {
