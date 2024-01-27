@@ -9,7 +9,7 @@ const ChatModal = ({open, onClose})=>{
   if(!open) return null;
 
   const [allMessages, setAllMessages] = useState([]);
-
+  
   const testRoom = 5;
   const inputRef = useRef(null);
 
@@ -19,33 +19,44 @@ const ChatModal = ({open, onClose})=>{
 
   function sendMessage (inputMsg){
     console.log('SendMsg allMessage:\n', allMessages);
-    const newSendMsg = inputMsg.current.value;
-    allMessages.push(<MsgBubble msg={newSendMsg} />);
-    setAllMessages(allMessages);
-    socket.emit("send_message", {msg: newSendMsg , testRoom});
 
+    const newSendMsg = inputMsg.current.value;
+    const newAllMessages = [...allMessages]
+    newAllMessages.push(newSendMsg);
+
+    socket.emit("send_message", {msg: newSendMsg , testRoom});
+    setAllMessages(newAllMessages);
     
-    console.log(allMessages);
+    console.log("Message after everything\n",newAllMessages);
   }
 
   useEffect(()=>{
     joinRoom(testRoom);
   },[]);
+  useEffect(()=>{
+    console.log("Mounting");
+  },[]);
 
   useEffect(() => {
     socket.on('receive_message', (data)=>{
-      allMessages.push(<MsgBubble msg={data.msg} />);
-      setAllMessages(data.msg)
+      console.log("All message on the Recieve side\n", allMessages);
+      console.log("Reciece side Data:\n", data.msg);
+      const newAllMessages = [...allMessages]
+      newAllMessages.push(data.msg);
+      setAllMessages(newAllMessages);
+      console.log('Reciece side after set arr:\n', allMessages)
     })
   }, [socket])
 
+
+  let allMessagesComponent = allMessages.map((ele, i) =>{return <MsgBubble key={'Msg'+i} msg={ele} className='msgBubble'/>});
 
   return(
     <div className="overlay-chatmodal">
       <div id="chat-container" >
         <button onClick={()=>{socket.off('receive_message');onClose()}}>X</button>
         <div id="message-container">
-          {allMessages}
+          {allMessagesComponent}
         </div>
         <input type="text" ref={inputRef}/>
         <button type="button" onClick={()=>sendMessage(inputRef)}>Send</button>

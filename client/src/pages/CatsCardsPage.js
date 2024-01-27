@@ -15,6 +15,8 @@ const CatDashboard = () => {
 
   const [chatModalOpen, setChatModalOpen] = useState(false);
 
+  // const [allMessages, setAllMessages] = useState([]);
+
   const updateMatches = async () => {};
 
   const swiped = (direction, swipedProfileId) => {
