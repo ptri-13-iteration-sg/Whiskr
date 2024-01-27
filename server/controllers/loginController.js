@@ -1,5 +1,9 @@
+require('dotenv').config();
 const Profile = require('../models/models.js');
 const loginController = {};
+const { OAuth2Client } = require('google-auth-library');
+const CLIENT_ID = process.env.CLIENT_ID;
+const client = new OAuth2Client(CLIENT_ID);
 
 const bcrypt = require('bcryptjs');
 
@@ -48,10 +52,19 @@ loginController.verifyUser = async (req, res, next) => {
       };
       return next(invalidPasswordErr);
     }
-  } catch (err) {
-    return next('Error in loginController.verifyUser: ' + JSON.stringify(err));
-  }
-};
+  } //catch (err) {
+    //return next('Error in loginController.verifyUser: ' + JSON.stringify(err));
+  //}
+//};
+      catch (err) {
+      console.error('loginController.verifyUser: Error', err);
+      next({
+        log: 'loginController.verifyUser: Error occurred',
+        status: 500,
+        message: 'An error occurred during the login process.',
+      });
+    }
+  };
 
 // Verify if the logged in user has an Adopter profile or Cat profile
 loginController.verifyAdopterOrCat = async (req, res, next) => {
@@ -192,6 +205,46 @@ loginController.createCat = async (req, res, next) => {
     return next();
   } catch (err) {
     return next('Error in loginController.createCat: ' + JSON.stringify(err));
+  }
+};
+
+loginController.verifyGoogleUser = async (req, res, next) => {
+  console.log('Entered verifyGoogleUser');
+  try {
+    const { token } = req.body; // Token received from the frontend
+
+    // Verify the token with Google
+    const ticket = await client.verifyIdToken({
+        idToken: token,
+        audience: CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
+    });
+    const payload = ticket.getPayload();
+
+    // Check if user exists in database
+    let user = await Profile.User.findOne({ email: payload.email });
+
+    // If user doesn't exist, create a new user
+    if (!user) {
+      user = await Profile.User.create({
+        email: payload.email,
+        name: payload.name,
+        // Add other relevant user fields
+      });
+    }
+
+    // Generate JWT Token from Paul here
+    // const token = jwt.sign({ userId: user._id }, 'your_jwt_secret', { expiresIn: '1h' });
+
+    // Send the token to the client
+    res.status(200).json({
+      message: 'User logged in successfully',
+      // token: token,
+      // user: user,    // Send back user data as needed
+    });
+
+  } catch (error) {
+    // Handle error
+    next(error);
   }
 };
 

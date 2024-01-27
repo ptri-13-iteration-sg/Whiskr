@@ -3,11 +3,12 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv"); // NOTE Line 1
 const cookieParser = require("cookie-parser");
-
+const cors = require('cors');
 // Route Files
 const loginRoutes = require("./routes/loginRoutes.js");
 const signupRoutes = require("./routes/signupRoutes.js");
 const getCardsRoutes = require("./routes/getCardsRoutes.js");
+const loginController = require('./controllers/loginController.js')
 
 dotenv.config(); // NOTE Line 2
 const app = express();
@@ -18,6 +19,10 @@ const PORT = process.env.SERV_PORT;
 app.use(express.json());
 // app.use(express.static(path.resolve(__dirname, '../build')));
 app.use(cookieParser());
+
+app.use(cors({
+  origin: 'http://localhost:3000',
+}));
 
 const MONGO_URI = process.env.MONGO_URI;
 console.log(
@@ -43,6 +48,7 @@ mongoose
 app.use("/api/getCards", getCardsRoutes);
 app.use("/api/signup", signupRoutes);
 app.use("/api/login", loginRoutes);
+app.post('/api/login/google', loginController.verifyGoogleUser);
 
 // Global error handler
 app.use((err, req, res, next) => {
