@@ -25,7 +25,7 @@ const CreateAccountCat = () => {
     };
 
     try {
-      const catResponse = await axios.post("/login/createCatProfile", newCat);
+      const catResponse = await axios.post("/api/login/createCatProfile", newCat);
 
       if (catResponse) {
         console.log("* New cat profile created, _id: ", catResponse.data);
