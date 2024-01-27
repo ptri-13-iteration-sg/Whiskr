@@ -8,6 +8,7 @@ const cookieParser = require("cookie-parser");
 const loginRoutes = require("./routes/loginRoutes.js");
 const signupRoutes = require("./routes/signupRoutes.js");
 const getCardsRoutes = require("./routes/getCardsRoutes.js");
+const swipedRightRoutes = require("./routes/swipedRightRoutes.js");
 
 dotenv.config(); // NOTE Line 2
 const app = express();
@@ -40,9 +41,10 @@ mongoose
   .catch((err) => console.log(err));
 
 // Route handlers
-app.use("/api/getCards", getCardsRoutes);
 app.use("/api/signup", signupRoutes);
 app.use("/api/login", loginRoutes);
+app.use("/api/getCards", getCardsRoutes);
+app.use("/api/swipedRight", swipedRightRoutes);
 
 // Global error handler
 app.use((err, req, res, next) => {
