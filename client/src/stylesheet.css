@@ -185,6 +185,9 @@ select {
     padding: 10px;
   }
 }
+.google-login {
+  line-height: 50%;
+}
 
 /* CREATE (CAT/ADOPTER) PROFILE PAGE */
 .create-profile-page {
