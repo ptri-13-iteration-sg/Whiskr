@@ -17,6 +17,7 @@ const Login = () => {
         const googleLoginRes = await axios.post("/api/login/google", {
           token: tokenResponse.access_token,
         });
+        navigate('/CatsCardsPage')
         // handle successful login here
       } catch (error) {
         // Handle errors

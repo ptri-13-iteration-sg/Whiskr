@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv"); // NOTE Line 1
 const cookieParser = require("cookie-parser");
 const cors = require('cors');
+const helmet = require('helmet');
+
 // Route Files
 const loginRoutes = require("./routes/loginRoutes.js");
 const signupRoutes = require("./routes/signupRoutes.js");
@@ -12,6 +14,14 @@ const loginController = require('./controllers/loginController.js')
 
 dotenv.config(); // NOTE Line 2
 const app = express();
+
+app.use(helmet.referrerPolicy({ policy: 'no-referrer-when-downgrade' }));
+
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+  next();
+});
 
 // Configs
 const PORT = process.env.SERV_PORT;

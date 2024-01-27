@@ -4,8 +4,9 @@ const loginController = {};
 const { OAuth2Client } = require('google-auth-library');
 const CLIENT_ID = process.env.CLIENT_ID;
 const client = new OAuth2Client(CLIENT_ID);
-
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const { setJwtCookie, handleServerError } = require('../utils/functions.js');
 
 // Log in user
 loginController.verifyUser = async (req, res, next) => {
@@ -216,7 +217,7 @@ loginController.verifyGoogleUser = async (req, res, next) => {
     // Verify the token with Google
     const ticket = await client.verifyIdToken({
         idToken: token,
-        audience: CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
+        audience: CLIENT_ID,
     });
     const payload = ticket.getPayload();
 
@@ -232,19 +233,25 @@ loginController.verifyGoogleUser = async (req, res, next) => {
       });
     }
 
-    // Generate JWT Token from Paul here
-    // const token = jwt.sign({ userId: user._id }, 'your_jwt_secret', { expiresIn: '1h' });
+    // Generate JWT Token for the user
+    const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
 
-    // Send the token to the client
+    // Set the JWT as an HTTP-only cookie
+    setJwtCookie(res, jwtToken);
+
+    // Send the response back to the client
     res.status(200).json({
       message: 'User logged in successfully',
-      // token: token,
-      // user: user,    // Send back user data as needed
+      user: {
+        email: user.email,
+        name: user.name
+        // Include other user details as necessary
+      }
     });
 
   } catch (error) {
     // Handle error
-    next(error);
+    handleServerError(res, error);
   }
 };
 
