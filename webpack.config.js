@@ -2,9 +2,7 @@
 const path = require("path");
 const dotenv = require("dotenv");
 const HtmlWebpackPlugin = require("html-webpack-plugin"); // generate an HTML file and inject the necessary script tags automatically
-
 dotenv.config();
-
 module.exports = {
   entry: path.join(__dirname, "./client/src/", "index.js"),
   output: {
