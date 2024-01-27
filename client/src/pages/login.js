@@ -1,6 +1,7 @@
 // Modules
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import useLocalState from "../utils/useLocalStorage";
 import axios from "axios";
 
 const Login = () => {
@@ -10,6 +11,7 @@ const Login = () => {
   // Response/error from server
   const [res, setRes] = useState(null);
   const [err, setErr] = useState(null);
+  const [token, setToken] = useLocalState("", "token");
 
   const navigate = useNavigate();
 
@@ -28,7 +30,8 @@ const Login = () => {
       console.log("* Login response from server: ", loginRes);
       setRes(`User has created an Adopter or Cat Profile: ${loginRes.data}.`);
       setErr(null);
-
+      console.log("loginRes.data.token", loginRes.data.token);
+      setToken(loginRes.data.token);
       // If the user has not created an Adopter or Cat profile yet...
       if (!loginRes.data) {
         console.log("* User has not created an adopter or cat profile yet");
@@ -56,6 +59,9 @@ const Login = () => {
       setErr(err.response.data);
     }
   };
+  // useEffect(() => {
+  //   console.log("jwt token", token);
+  // }, [token]);
 
   return (
     <div className="login-page">

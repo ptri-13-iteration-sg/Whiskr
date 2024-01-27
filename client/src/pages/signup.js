@@ -2,6 +2,7 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import useLocalState from "../utils/useLocalStorage";
 
 const Signup = () => {
   const emailRef = useRef();
@@ -11,6 +12,7 @@ const Signup = () => {
   // Response/error from server
   const [res, setRes] = useState(null);
   const [err, setErr] = useState(null);
+  const [token, setToken] = useLocalState("", "token");
 
   const navigate = useNavigate();
 
@@ -31,6 +33,7 @@ const Signup = () => {
 
       setRes(`User ID Created: ${userResponse.data}.  Please proceed to log in page.`);
       setErr(null);
+      setToken(userResponse.data.token);
     } catch (err) {
       console.log("* Error from server: ", err.response.data);
       setRes(null);
