@@ -27,4 +27,7 @@ router.post("/createCatProfile", loginController.createCat, (req, res) => {
   return res.status(200).json(res.locals._id);
 });
 
+// Route for handling Google OAuth Login
+router.post('/google', loginController.verifyGoogleUser);
+
 module.exports = router;

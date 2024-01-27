@@ -67,6 +67,14 @@ const adopterSchema = new Schema({
     type: String,
     required: true,
   },
+  likes: {
+    type: Array,
+    required: true,
+  },
+  matches: {
+    type: Array,
+    required: true,
+  },
 });
 
 // Cat Profile Schema
@@ -94,6 +102,14 @@ const catSchema = new Schema({
   },
   imageUrl: {
     type: String,
+    required: true,
+  },
+  likes: {
+    type: Array,
+    required: true,
+  },
+  matches: {
+    type: Array,
     required: true,
   },
 });

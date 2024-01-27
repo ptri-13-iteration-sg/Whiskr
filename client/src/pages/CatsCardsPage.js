@@ -1,7 +1,6 @@
 // Modules
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
 // Components
 import TinderCard from "react-tinder-card";
 import SideBar from "../components/SideBar.js";
@@ -16,38 +15,32 @@ const CatDashboard = () => {
   const [chatModalOpen, setChatModalOpen] = useState(false);
 
   // const [allMessages, setAllMessages] = useState([]);
-
-  const updateMatches = async () => {};
-
+  // const updateLikesFindMatches = async (profileId) => {
+  //   axios.patch({ _id: profileId });
+  // };
   const swiped = (direction, swipedProfileId) => {
-    console.log(`* Swiped ${direction} on ${nameToDelete}`);
-
-    if (direction === "right") {
-      updateMatches(swipedProfileId);
-    }
-
+    console.log(`* Swiped ${direction} on ${swipedProfileId}`);
+      // if (direction === "right") {
+      //   updateLikesFindMatches(swipedProfileId);
+      // }
     setLastDirection(direction);
   };
-
   const outOfFrame = (name) => {
     console.log(`* ${name} left the screen!`);
   };
-
   useEffect(() => {
     // Use an async function inside useEffect to fetch data
     const fetchData = async () => {
       try {
-        const response = await axios.get("/api/cats");
+        const response = await axios.get("api/getCards/cats");
         setCharacters(response.data);
         console.log("* Retrieved cats from db:", response.data);
       } catch (error) {
         console.error("Error retrieving cats:", error);
       }
     };
-
     fetchData();
   }, []); // Empty dependency array ensures useEffect runs once after initial render
-
   return (
     <div className="cards-page">
 

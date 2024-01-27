@@ -3,6 +3,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv"); // NOTE Line 1
 const cookieParser = require("cookie-parser");
+const cors = require('cors');
+const helmet = require('helmet');
 
 const { createServer } = require('node:http');
 const { Server } = require("socket.io");
@@ -11,10 +13,20 @@ const cors = require('cors');
 // Route Files
 const loginRoutes = require("./routes/loginRoutes.js");
 const signupRoutes = require("./routes/signupRoutes.js");
-const apiRoutes = require("./routes/apiRoutes.js");
+const getCardsRoutes = require("./routes/getCardsRoutes.js");
+const loginController = require('./controllers/loginController.js')
+const swipedRightRoutes = require("./routes/swipedRightRoutes.js");
 
 dotenv.config(); // NOTE Line 2
 const app = express();
+
+app.use(helmet.referrerPolicy({ policy: 'no-referrer-when-downgrade' }));
+
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+  next();
+});
 
 // Configs
 const PORT = process.env.SERV_PORT;
@@ -27,6 +39,10 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 
+
+app.use(cors({
+  origin: 'http://localhost:3000',
+}));
 
 const MONGO_URI = process.env.MONGO_URI;
 console.log(
@@ -49,9 +65,11 @@ mongoose
   .catch((err) => console.log(err));
 
 // Route handlers
-app.use("/api", apiRoutes);
-app.use("/signup", signupRoutes);
-app.use("/login", loginRoutes);
+app.use("/api/signup", signupRoutes);
+app.use("/api/login", loginRoutes);
+app.post('/api/login/google', loginController.verifyGoogleUser);
+app.use("/api/getCards", getCardsRoutes);
+app.use("/api/swipedRight", swipedRightRoutes);
 
 //Socket.io 
 const io = new Server(server);
