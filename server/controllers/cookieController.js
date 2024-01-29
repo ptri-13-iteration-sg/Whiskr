@@ -6,8 +6,11 @@ const cookieController = {};
 
 //Sets session cookie
 cookieController.setCookie = async (req, res, next) => {
+  console.log("* Setting session cookie...");
+
   const { email } = req.body;
-  console.log("set cookie req.body->", req.body);
+  console.log("  - set cookie req.body: ", req.body);
+
   try {
     // const user = await model.User.findOne({ email });
     // const userID = user._id.toString();
@@ -17,7 +20,8 @@ cookieController.setCookie = async (req, res, next) => {
       expiresIn: "1d",
     });
     setJwtCookie(res, token);
-    console.log(token);
+    console.log("  - token created: ", token);
+
     res.status(201).json({
       token: token,
     });
