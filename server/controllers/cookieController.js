@@ -18,9 +18,10 @@ cookieController.setCookie = async (req, res, next) => {
     });
     setJwtCookie(res, token);
     console.log(token);
-    res.status(201).json({
-      token: token,
-    });
+    // res.status(201).json({
+    //   token: token,
+    // });
+    res.locals.userLoginInfo.token = token;
     return next();
   } catch (err) {
     handleServerError(res, err);
