@@ -1,14 +1,14 @@
-import React, {useRef, useEffect, useState} from "react";
+import React, {useRef, useEffect, useState, useReducer} from "react";
 import io from 'socket.io-client';
 
 import MsgBubble from "./MsgBubble.jsx";
 
 const socket = io.connect('http://localhost:8080');
 
-const ChatModal = ({open, onClose})=>{
+const ChatModal = ({open, onClose, allMessages,setAllMessages})=>{
   if(!open) return null;
 
-  const [allMessages, setAllMessages] = useState([]);
+  // const [allMessages, setAllMessages] = useState([]);
   
   const testRoom = 5;
   const inputRef = useRef(null);
@@ -26,11 +26,13 @@ const ChatModal = ({open, onClose})=>{
 
     socket.emit("send_message", {msg: newSendMsg , testRoom});
     setAllMessages(newAllMessages);
+    inputMsg.current.value = '';
     
     console.log("Message after everything\n",newAllMessages);
   }
 
   useEffect(()=>{
+    console.log("Join triggered")
     joinRoom(testRoom);
   },[]);
   useEffect(()=>{
@@ -46,11 +48,10 @@ const ChatModal = ({open, onClose})=>{
       setAllMessages(newAllMessages);
       console.log('Reciece side after set arr:\n', allMessages)
     })
-  }, [socket])
+  }, [socket, allMessages])
 
 
   let allMessagesComponent = allMessages.map((ele, i) =>{return <MsgBubble key={'Msg'+i} msg={ele} className='msgBubble'/>});
-
   return(
     <div className="overlay-chatmodal">
       <div id="chat-container" >

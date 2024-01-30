@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+
 // Components
 import TinderCard from "react-tinder-card";
 import SideBar from "../components/SideBar.js";
@@ -15,7 +16,7 @@ const CatDashboard = () => {
 
   const [chatModalOpen, setChatModalOpen] = useState(false);
 
-  // const [allMessages, setAllMessages] = useState([]);
+  const [allMessages, setAllMessages] = useState([]);
 
   const updateMatches = async () => {};
 
@@ -48,10 +49,11 @@ const CatDashboard = () => {
     fetchData();
   }, []); // Empty dependency array ensures useEffect runs once after initial render
 
+  
   return (
     <div className="cards-page">
 
-      <ChatModal open={chatModalOpen} onClose={()=>setChatModalOpen(false)} />
+      <ChatModal  open={chatModalOpen} onClose={()=>setChatModalOpen(false)} allMessages={allMessages}  setAllMessages={setAllMessages}/>
       
       <div className="card-container">
               

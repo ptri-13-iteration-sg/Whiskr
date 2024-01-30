@@ -58,6 +58,7 @@ const io = new Server(server);
 io.on('connection', (socket) =>{
 
   socket.on('join_room', (data)=>{
+    console.log("Joining room: ",data)
     socket.join(data);
   })
 
