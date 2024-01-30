@@ -11,7 +11,8 @@ router.post(
   loginController.verifyAdopterOrCat,
   cookieController.setCookie,
   (req, res) => {
-    res.json(res.locals.hasAdopterOrCatProfile);
+    console.log("res.locals.userLoginInfo: ", res.locals.userLoginInfo);
+    res.json(res.locals.userLoginInfo);
   }
 );
 
@@ -28,6 +29,6 @@ router.post("/createCatProfile", loginController.createCat, (req, res) => {
 });
 
 // Route for handling Google OAuth Login
-router.post('/google', loginController.verifyGoogleUser);
+router.post("/google", loginController.verifyGoogleUser);
 
 module.exports = router;
