@@ -58,7 +58,7 @@ mongoose
 // Route handlers
 app.use("/api/signup", signupRoutes);
 app.use("/api/login", loginRoutes);
-app.post('/api/login/google', loginController.verifyGoogleUser);
+app.post('/api/login/google', loginController.verifyGoogleUser); // this is why controller for login logic is required
 app.use("/api/getCards", getCardsRoutes);
 app.use("/api/swipedRight", swipedRightRoutes);
 
