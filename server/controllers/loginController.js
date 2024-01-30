@@ -1,7 +1,12 @@
+require('dotenv').config();
 const Profile = require('../models/models.js');
 const loginController = {};
-
+const { OAuth2Client } = require('google-auth-library');
+const CLIENT_ID = process.env.CLIENT_ID;
+const client = new OAuth2Client(CLIENT_ID);
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const { setJwtCookie, handleServerError } = require('../utils/functions.js');
 
 // Log in user
 loginController.verifyUser = async (req, res, next) => {
@@ -48,10 +53,19 @@ loginController.verifyUser = async (req, res, next) => {
       };
       return next(invalidPasswordErr);
     }
-  } catch (err) {
-    return next('Error in loginController.verifyUser: ' + JSON.stringify(err));
-  }
-};
+  } //catch (err) {
+    //return next('Error in loginController.verifyUser: ' + JSON.stringify(err));
+  //}
+//};
+      catch (err) {
+      console.error('loginController.verifyUser: Error', err);
+      next({
+        log: 'loginController.verifyUser: Error occurred',
+        status: 500,
+        message: 'An error occurred during the login process.',
+      });
+    }
+  };
 
 // Verify if the logged in user has an Adopter profile or Cat profile
 loginController.verifyAdopterOrCat = async (req, res, next) => {
@@ -192,6 +206,52 @@ loginController.createCat = async (req, res, next) => {
     return next();
   } catch (err) {
     return next('Error in loginController.createCat: ' + JSON.stringify(err));
+  }
+};
+
+loginController.verifyGoogleUser = async (req, res, next) => {
+  console.log('Entered verifyGoogleUser');
+  try {
+    const { token } = req.body; // Token received from the frontend
+
+    // Verify the token with Google
+    const ticket = await client.verifyIdToken({
+        idToken: token,
+        audience: CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+
+    // Check if user exists in database
+    let user = await Profile.User.findOne({ email: payload.email });
+
+    // If user doesn't exist, create a new user
+    if (!user) {
+      user = await Profile.User.create({
+        email: payload.email,
+        name: payload.name,
+        // Add other relevant user fields
+      });
+    }
+
+    // Generate JWT Token for the user
+    const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
+
+    // Set the JWT as an HTTP-only cookie
+    setJwtCookie(res, jwtToken);
+
+    // Send the response back to the client
+    res.status(200).json({
+      message: 'User logged in successfully',
+      user: {
+        email: user.email,
+        name: user.name
+        // Include other user details as necessary
+      }
+    });
+
+  } catch (error) {
+    // Handle error
+    handleServerError(res, error);
   }
 };
 
