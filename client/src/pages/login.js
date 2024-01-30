@@ -3,35 +3,10 @@ import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import useLocalState from "../utils/useLocalStorage";
 import axios from "axios";
-import { useGoogleLogin } from '@react-oauth/google';
 
 const Login = () => {
   const emailRef = useRef();
   const passwordRef = useRef();
-
-
-  // generating login button for Google
-  const googleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      try {
-        const googleLoginRes = await axios.post("/api/login/google", {
-          token: tokenResponse.access_token,
-        });
-        navigate('/CatsCardsPage')
-        // handle successful login here
-      } catch (error) {
-        // Handle errors
-        console.error("Error from googleLogin:", error);
-        // Check if the error response has the expected format
-        if (error.response && error.response.data) {
-          setErr(error.response.data);
-        } else {
-          // If the error format is not as expected, use a generic message
-          setErr("An error occurred during the login process.");
-        }
-      }
-    },
-  });
 
   // Response/error from server
   const [res, setRes] = useState(null);
@@ -101,7 +76,6 @@ const Login = () => {
         <input type="password" placeholder="password" ref={passwordRef} />
 
         <button type="submit">Log in</button>
-        <button className="google-login" onClick={() => googleLogin()}>Sign in with Google 🚀</button>
       </form>
       {res && <p className="response-text">{JSON.stringify(res)}</p>}
       {err && <p className="error-text">{err}</p>}
