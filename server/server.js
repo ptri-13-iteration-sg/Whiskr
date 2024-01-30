@@ -1,7 +1,7 @@
 // Modules
+const dotenv = require("dotenv"); // NOTE Line 1
 const express = require("express");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv"); // NOTE Line 1
 const cookieParser = require("cookie-parser");
 const cors = require('cors');
 const helmet = require('helmet');
@@ -47,8 +47,8 @@ app.use(express.json()); // enables server to parse JSON data sent in the body o
 mongoose
   .connect(MONGO_URI, {
     // options for the connect method to parse the URI
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    // useNewUrlParser: true,
+    // useUnifiedTopology: true,
     // sets the name of the DB that our collections are part of
     dbName: "whiskr",
   })
