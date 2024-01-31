@@ -10,13 +10,12 @@ import SideBar from "../components/SideBar.js";
 import ChatModal from "../components/ChatModal.jsx";
 import '../stylesheets/chatModal.scss';
 
+
 const CatDashboard = () => {
   const [characters, setCharacters] = useState([]);
   const [lastDirection, setLastDirection] = useState();
 
   const [chatModalOpen, setChatModalOpen] = useState(false);
-
-  const [allMessages, setAllMessages] = useState([]);
 
   const updateMatches = async () => {};
 
@@ -48,7 +47,7 @@ const CatDashboard = () => {
   return (
     <div className="cards-page">
 
-      <ChatModal  open={chatModalOpen} onClose={()=>setChatModalOpen(false)} allMessages={allMessages}  setAllMessages={setAllMessages}/>
+      <ChatModal  open={chatModalOpen} onClose={()=>setChatModalOpen(false)}/>
       
       <div className="card-container">
               

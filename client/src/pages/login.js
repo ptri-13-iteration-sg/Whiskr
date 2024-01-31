@@ -3,7 +3,8 @@ import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import useLocalState from "../utils/useLocalStorage";
 import axios from "axios";
-import { useGoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin } from "@react-oauth/google";
+
 
 const Login = () => {
   const emailRef = useRef();
@@ -17,7 +18,7 @@ const Login = () => {
         const googleLoginRes = await axios.post("/api/login/google", {
           token: tokenResponse.access_token,
         });
-        navigate('/CatsCardsPage')
+        navigate("/CatsCardsPage");
         // handle successful login here
       } catch (error) {
         // Handle errors
@@ -53,12 +54,15 @@ const Login = () => {
       const loginRes = await axios.post("api/login", userCredentials);
 
       console.log("* Login response from server: ", loginRes);
-      setRes(`User has created an Adopter or Cat Profile: ${loginRes.data}.`);
+      console.log("* loginRes.data: ", loginRes.data);
+      setRes(
+        `User has created an Adopter or Cat Profile: ${loginRes.data.hasAdopterOrCatProfile}.`
+      );
       setErr(null);
-      console.log("loginRes.data.token", loginRes.data.token);
+      console.log("User token: ", loginRes.data.token);
       setToken(loginRes.data.token);
       // If the user has not created an Adopter or Cat profile yet...
-      if (!loginRes.data) {
+      if (!loginRes.data.hasAdopterOrCatProfile) {
         console.log("* User has not created an adopter or cat profile yet");
         // Navigate to the create Adopter or create Cat Profile page depending on the user's selection when they registered their account
         const userAccountType = await axios.post(
@@ -101,7 +105,11 @@ const Login = () => {
         <input type="password" placeholder="password" ref={passwordRef} />
 
         <button type="submit">Log in</button>
-        <button className="google-login" onClick={() => googleLogin()}>Sign in with Google 🚀</button>
+
+        <button className="google-login" onClick={() => googleLogin()}>
+          Sign in with Google 🚀
+        </button>
+
       </form>
       {res && <p className="response-text">{JSON.stringify(res)}</p>}
       {err && <p className="error-text">{err}</p>}

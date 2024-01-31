@@ -1,7 +1,7 @@
 // Modules
+const dotenv = require("dotenv"); // NOTE Line 1
 const express = require("express");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv"); // NOTE Line 1
 const cookieParser = require("cookie-parser");
 const cors = require('cors');
 const helmet = require('helmet');
@@ -56,8 +56,8 @@ app.use(express.json()); // enables server to parse JSON data sent in the body o
 mongoose
   .connect(MONGO_URI, {
     // options for the connect method to parse the URI
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    // useNewUrlParser: true,
+    // useUnifiedTopology: true,
     // sets the name of the DB that our collections are part of
     dbName: "whiskr",
   })
@@ -67,12 +67,17 @@ mongoose
 // Route handlers
 app.use("/api/signup", signupRoutes);
 app.use("/api/login", loginRoutes);
-app.post('/api/login/google', loginController.verifyGoogleUser);
+app.post('/api/login/google', loginController.verifyGoogleUser); // this is why controller for login logic is required
 app.use("/api/getCards", getCardsRoutes);
 app.use("/api/swipedRight", swipedRightRoutes);
 
 //Socket.io 
-const io = new Server(server);
+const io = new Server(server, {
+  cors:{
+    origin:"http://localhost:8080",
+    methods:["GET", "POST"]
+  }
+});
 io.on('connection', (socket) =>{
 
   socket.on('join_room', (data)=>{
@@ -81,6 +86,7 @@ io.on('connection', (socket) =>{
   })
 
   socket.on("send_message", (data) => {
+    console.log(data);
     socket.to(data.testRoom).emit("receive_message", data);
   })
 })

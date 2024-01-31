@@ -3,12 +3,12 @@ import io from 'socket.io-client';
 
 import MsgBubble from "./MsgBubble.jsx";
 
-const socket = io.connect('http://localhost:8080');
+const socket = io.connect('http://localhost:3000');
 
-const ChatModal = ({open, onClose, allMessages,setAllMessages})=>{
+const ChatModal = ({open, onClose})=>{
   if(!open) return null;
 
-  // const [allMessages, setAllMessages] = useState([]);
+  const [allMessages, setAllMessages] = useState([]);
   
   const testRoom = 5;
   const inputRef = useRef(null);
