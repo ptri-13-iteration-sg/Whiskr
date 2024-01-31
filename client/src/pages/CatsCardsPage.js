@@ -1,15 +1,24 @@
 // Modules
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+
+
 // Components
 import TinderCard from "react-tinder-card";
 import SideBar from "../components/SideBar.js";
+
+import ChatModal from "../components/ChatModal.jsx";
+import '../stylesheets/chatModal.scss';
+
+
 const CatDashboard = () => {
   const [characters, setCharacters] = useState([]);
   const [lastDirection, setLastDirection] = useState();
-  // const updateLikesFindMatches = async (profileId) => {
-  //   axios.patch({ _id: profileId });
-  // };
+
+  const [chatModalOpen, setChatModalOpen] = useState(false);
+
+  const updateMatches = async () => {};
+
   const swiped = (direction, swipedProfileId) => {
     console.log(`* Swiped ${direction} on ${swipedProfileId}`);
       // if (direction === "right") {
@@ -33,9 +42,15 @@ const CatDashboard = () => {
     };
     fetchData();
   }, []); // Empty dependency array ensures useEffect runs once after initial render
+
+  
   return (
     <div className="cards-page">
+
+      <ChatModal  open={chatModalOpen} onClose={()=>setChatModalOpen(false)}/>
+      
       <div className="card-container">
+              
         {characters.map((character) => (
           <TinderCard
             className="swipe"
@@ -66,7 +81,8 @@ const CatDashboard = () => {
           </TinderCard>
         ))}
       </div>
-      <SideBar className="side-bar" />
+
+      <SideBar className="side-bar" setChatModalOpen={setChatModalOpen}/>
     </div>
   );
 };

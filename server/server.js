@@ -6,6 +6,10 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const helmet = require("helmet");
 
+const { createServer } = require('node:http');
+const { Server } = require("socket.io");
+
+
 // Route Files
 const loginRoutes = require("./routes/loginRoutes.js");
 const signupRoutes = require("./routes/signupRoutes.js");
@@ -28,9 +32,14 @@ app.use((req, res, next) => {
 // Configs
 const PORT = process.env.SERV_PORT;
 
+//Create server
+const server = createServer(app);
+
 app.use(express.json());
 // app.use(express.static(path.resolve(__dirname, '../build')));
 app.use(cookieParser());
+app.use(cors());
+
 
 app.use(
   cors({
@@ -66,6 +75,25 @@ app.use("/api/getCards", getCardsRoutes);
 app.use("/api/swipedRight", swipedRightRoutes);
 app.use("/api/logout", logoutRoute);
 
+//Socket.io 
+const io = new Server(server, {
+  cors:{
+    origin:"http://localhost:8080",
+    methods:["GET", "POST"]
+  }
+});
+io.on('connection', (socket) =>{
+
+  socket.on('join_room', (data)=>{
+    console.log("Joining room: ",data)
+    socket.join(data);
+  })
+
+  socket.on("send_message", (data) => {
+    socket.to(data.testRoom).emit("receive_message", data);
+  })
+})
+
 // Global error handler
 app.use((err, req, res, next) => {
   const defaultErr = {
@@ -79,7 +107,7 @@ app.use((err, req, res, next) => {
 });
 
 // Turn computer into a server and listen for incoming reqs
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`* Server listening @ http://localhost:${PORT}`);
 });
 
