@@ -6,20 +6,12 @@ const path = require("path");
 const swipedRightController = require("../controllers/swipedRightController.js");
 
 router.patch(
-  "/adopterSwiping",
-  swipedRightController.addLikeCat,
-  swipedRightController.checkLikesAdopter,
+  "/",
+  swipedRightController.addLike,
+  swipedRightController.checkLikes,
+  swipedRightController.addMatch,
   (req, res) => {
-    res.json("SUCCESS");
-  }
-);
-
-router.patch(
-  "/catSwiping",
-  swipedRightController.addLikeAdopter,
-  swipedRightController.checkLikesCat,
-  (req, res) => {
-    res.json("SUCCESS");
+    res.json(res.locals.matches);
   }
 );
 

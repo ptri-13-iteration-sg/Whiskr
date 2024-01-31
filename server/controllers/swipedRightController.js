@@ -1,20 +1,33 @@
 const model = require("../models/models.js");
 const swipedRightController = {};
 
-// Add adopter's _id to liked cat's likes array
-swipedRightController.addLikeCat = async (req, res, next) => {
-  console.log("* Adding adopter to cat's likes array...");
+// Add sender's _id to recipient's likes
+swipedRightController.addLike = async (req, res, next) => {
+  console.log("* Adding sender's _id to recipient's likes array...");
 
   try {
-    const { idLiker, idLiked } = req.body;
+    const { idSender, idRecipient } = req.body;
 
-    const filter = { _id: idLiked };
-    const update = { $push: { likes: idLiker } };
-
-    const updatedProfile = await model.Cat.findOneAndUpdate(filter, update, {
+    // Find the recipient's profile and add sender's _id to it's likes array
+    const filter = { _id: idRecipient };
+    const update = { $push: { likes: idSender } };
+    const adopter = await model.Adopter.findOneAndUpdate(filter, update, {
       new: true,
     });
-    console.log(`  - Added adopter's id (${idLiker}) to cat profile: `, updatedProfile);
+    const cat = await model.Cat.findOneAndUpdate(filter, update, {
+      new: true,
+    });
+
+    // Whichever findOneAndUpdate does not return null is the profile type of the recipient
+    if (adopter) {
+      console.log("  - Recipient is an adopter");
+      res.locals.recipientProfileType = "adopter";
+    } else if (cat) {
+      console.log("  - Recipient is a cat");
+      res.locals.recipientProfileType = "cat";
+    } else {
+      console.log("  - Recipient DNE");
+    }
 
     return next();
   } catch (err) {
@@ -22,25 +35,27 @@ swipedRightController.addLikeCat = async (req, res, next) => {
   }
 };
 
-// Check adopter's likes array for liked cat's _id
-swipedRightController.checkLikesAdopter = async (req, res, next) => {
-  console.log("* Checking adopter's profile to see if cat liked back...");
+// Check sender's likes array for recipient's _id
+swipedRightController.checkLikes = async (req, res, next) => {
+  console.log("* Checking sender's profile to see if recipient liked back...");
 
   try {
-    const { idLiker, idLiked } = req.body;
+    const { idSender, idRecipient } = req.body;
 
-    const adopter = await model.Adopter.findOne({ _id: idLiker });
-    console.log(`  - Adopter's (${adopter._id}) likes: `, adopter.likes);
+    const foundAdopter = await model.Adopter.findOne({ _id: idSender });
+    const foundCat = await model.Cat.findOne({ _id: idSender });
 
-    if (adopter.likes.includes(idLiked)) {
-      console.log(`  - Cat liked back!`);
-      const filter = { _id: idLiker };
-      const update = { $push: { matches: idLiked } };
-
-      updatedProfile = await model.Adopter.findOneAndUpdate(filter, update, {
-        new: true,
-      });
-      console.log(`  - New match added for adopter!  ${updatedProfile}`);
+    // Whichever findOne does not return null is the profile type of the sender
+    if (foundAdopter) {
+      console.log("  - Sender is an adopter");
+      res.locals.senderProfileType = "adopter";
+      res.locals.likedBack = foundAdopter.likes.includes(idRecipient) ? true : false;
+    } else if (foundCat) {
+      console.log("  - Sender is a cat");
+      res.locals.senderProfileType = "cat";
+      res.locals.likedBack = foundCat.likes.includes(idRecipient) ? true : false;
+    } else {
+      console.log("  - Sender DNE");
     }
 
     return next();
@@ -51,48 +66,106 @@ swipedRightController.checkLikesAdopter = async (req, res, next) => {
   }
 };
 
-// Add cat's _id to liked adopter's likes array
-swipedRightController.addLikeAdopter = async (req, res, next) => {
-  console.log("* Adding cat to adopter's likes array...");
+// Update matches arrays for both sender and recipient
+swipedRightController.addMatch = async (req, res, next) => {
+  console.log("* Updating matches array for both sender & recipient...");
 
   try {
-    const { idLiker, idLiked } = req.body;
+    const { idSender, idRecipient } = req.body;
 
-    const filter = { _id: idLiked };
-    const update = { $push: { likes: idLiker } };
+    console.log("  - res.locals.likedBack: ", res.locals.likedBack);
 
-    const updatedProfile = await model.Adopter.findOneAndUpdate(filter, update, {
-      new: true,
-    });
-    console.log(`  - Added cat's id (${idLiker}) to adopter profile: `, updatedProfile);
+    // If there is a mutual liking between sender and recipient...
+    if (res.locals.likedBack) {
+      // If the sender is an adopter...
+      if (res.locals.senderProfileType === "adopter") {
+        // Create an object to represent the sender
+        const foundAdopter = await model.Adopter.findOne({ _id: idSender });
+        const senderObj = {
+          _id: idSender,
+          name: foundAdopter.name,
+          imageUrl: foundAdopter.imageUrl,
+          roomId: idSender.slice(-4) + idRecipient.slice(-4),
+        };
 
-    return next();
-  } catch (err) {
-    return next("Error in swipedRightController.addLikeAdopter: " + JSON.stringify(err));
-  }
-};
+        // Create an object to represent the recipient
+        const foundCat = await model.Cat.findOne({ _id: idRecipient });
+        const recipientObj = {
+          _id: idRecipient,
+          name: foundCat.name,
+          imageUrl: foundCat.imageUrl,
+          roomId: idSender.slice(-4) + idRecipient.slice(-4),
+        };
 
-// Check cat's likes array for liked adopter's _id
-swipedRightController.checkLikesCat = async (req, res, next) => {
-  console.log("* Checking cat's profile to see if adopter liked back...");
+        // Add sender object to recipient's matches array
+        const filterRecipient = { _id: idRecipient };
+        const addSenderObj = { $push: { matches: senderObj } };
+        await model.Cat.findOneAndUpdate(filterRecipient, addSenderObj, {
+          new: true,
+        });
 
-  try {
-    const { idLiker, idLiked } = req.body;
+        // Add recipient object to sender's matches array
+        const filterSender = { _id: idSender };
+        const addRecipientObj = { $push: { matches: recipientObj } };
+        const updatedSender = await model.Adopter.findOneAndUpdate(
+          filterSender,
+          addRecipientObj,
+          {
+            new: true,
+          }
+        );
 
-    const cat = await model.Cat.findOne({ _id: idLiker });
-    console.log(`  - Cat's (${cat._id}) likes: `, cat.likes);
+        console.log("  - my matches: ", updatedSender.matches);
 
-    if (cat.likes.includes(idLiked)) {
-      console.log(`  - Adopter liked back!`);
-      const filter = { _id: idLiker };
-      const update = { $push: { matches: idLiked } };
+        // Pass on matches to front end
+        res.locals.matches = updatedSender.matches;
+        return next();
 
-      updatedProfile = await model.Cat.findOneAndUpdate(filter, update, {
-        new: true,
-      });
-      console.log(`  - New match added for cat!  ${updatedProfile}`);
+        // If the sender is a cat...
+      } else if (res.locals.senderProfileType === "cat") {
+        // Create an object to represent the sender
+        const foundCat = await model.Cat.findOne({ _id: idSender });
+        const senderObj = {
+          _id: idSender,
+          name: foundCat.name,
+          imageUrl: foundCat.imageUrl,
+          roomId: idSender.slice(-4) + idRecipient.slice(-4),
+        };
+
+        // Create an object to represent the recipient
+        const foundAdopter = await model.Adopter.findOne({ _id: idRecipient });
+        const recipientObj = {
+          _id: idRecipient,
+          name: foundAdopter.name,
+          imageUrl: foundAdopter.imageUrl,
+          roomId: idSender.slice(-4) + idRecipient.slice(-4),
+        };
+
+        // Add sender object to recipient's matches array
+        const filterRecipient = { _id: idRecipient };
+        const addSenderObj = { $push: { matches: senderObj } };
+        await model.Adopter.findOneAndUpdate(filterRecipient, addSenderObj, {
+          new: true,
+        });
+
+        // Add recipient object to sender's matches array
+        const filterSender = { _id: idSender };
+        const addRecipientObj = { $push: { matches: recipientObj } };
+        const updatedSender = await model.Cat.findOneAndUpdate(
+          filterSender,
+          addRecipientObj,
+          {
+            new: true,
+          }
+        );
+
+        console.log("  - my matches: ", updatedSender.matches);
+
+        // Pass on matches to front end
+        res.locals.matches = updatedSender.matches;
+        return next();
+      }
     }
-
     return next();
   } catch (err) {
     return next(
