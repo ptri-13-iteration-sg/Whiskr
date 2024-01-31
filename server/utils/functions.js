@@ -6,7 +6,7 @@ const setJwtCookie = (res, token) => {
 };
 const handleServerError = (res, error) => {
   console.log(error);
-  res.status(200).json({ message: 'Internal Server Error' });
+  res.status(500).json({ message: 'Internal Server Error' });
 };
 
 module.exports = { setJwtCookie, handleServerError };
