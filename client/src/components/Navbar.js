@@ -1,6 +1,7 @@
 // Modules
 import React, {useState} from "react";
 import { Link } from "react-router-dom";
+import Logout from "./Logout";
 
 
 const Navbar = () => {
@@ -19,6 +20,7 @@ const Navbar = () => {
           <h4>About</h4>
         </Link>
       </div>
+      <Logout />
     </header>
   );
 };
