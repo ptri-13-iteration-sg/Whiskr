@@ -3,24 +3,25 @@ const dotenv = require("dotenv"); // NOTE Line 1
 const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
-const cors = require('cors');
-const helmet = require('helmet');
+const cors = require("cors");
+const helmet = require("helmet");
 
 // Route Files
 const loginRoutes = require("./routes/loginRoutes.js");
 const signupRoutes = require("./routes/signupRoutes.js");
 const getCardsRoutes = require("./routes/getCardsRoutes.js");
-const loginController = require('./controllers/loginController.js')
+const loginController = require("./controllers/loginController.js");
 const swipedRightRoutes = require("./routes/swipedRightRoutes.js");
+const logoutRoute = require("./routes/logoutRoute.js");
 
 dotenv.config(); // NOTE Line 2
 const app = express();
 
-app.use(helmet.referrerPolicy({ policy: 'no-referrer-when-downgrade' }));
+app.use(helmet.referrerPolicy({ policy: "no-referrer-when-downgrade" }));
 
 app.use((req, res, next) => {
-  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
-  res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
   next();
 });
 
@@ -31,9 +32,11 @@ app.use(express.json());
 // app.use(express.static(path.resolve(__dirname, '../build')));
 app.use(cookieParser());
 
-app.use(cors({
-  origin: 'http://localhost:3000',
-}));
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+  })
+);
 
 const MONGO_URI = process.env.MONGO_URI;
 console.log(
@@ -58,9 +61,10 @@ mongoose
 // Route handlers
 app.use("/api/signup", signupRoutes);
 app.use("/api/login", loginRoutes);
-app.post('/api/login/google', loginController.verifyGoogleUser); // this is why controller for login logic is required
+app.post("/api/login/google", loginController.verifyGoogleUser); // this is why controller for login logic is required
 app.use("/api/getCards", getCardsRoutes);
 app.use("/api/swipedRight", swipedRightRoutes);
+app.use("/api/logout", logoutRoute);
 
 // Global error handler
 app.use((err, req, res, next) => {
