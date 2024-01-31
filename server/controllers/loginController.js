@@ -202,13 +202,22 @@ loginController.createCat = async (req, res, next) => {
 loginController.verifyGoogleUser = async (req, res, next) => {
   console.log("Entered verifyGoogleUser");
   try {
-    const { token } = req.body; // Token received from the frontend
+    // this is our google token
+    // how do we use this token to access user name, email, etc.
+    const { idToken } = req.body; // Token received from the oauth provider
+    console.log('this is our default-format access token: ', req.body);
+
+    // const accessTokenJWT = jwt.sign({ token }, process.env.JWT_SECRET, {
+    //   expiresIn: "24h",
+    // });
+    // console.log('this is our access token converted to jwt: ', accessTokenJWT);
 
     // Verify the token with Google
     const ticket = await client.verifyIdToken({
-      idToken: token,
-      audience: CLIENT_ID,
+      idToken: idToken,
+      audience: process.env.CLIENT_ID,
     });
+    // this will grab the user information
     const payload = ticket.getPayload();
 
     // Check if user exists in database
@@ -224,12 +233,15 @@ loginController.verifyGoogleUser = async (req, res, next) => {
     }
 
     // Generate JWT Token for the user
+    // this assigns jwt token for user-recognition throughout application
     const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "24h",
     });
 
     // Set the JWT as an HTTP-only cookie
     setJwtCookie(res, jwtToken);
+    // This allows us to access this token from the frontend
+    res.locals.data.token = { token: jwtToken };
 
     // Send the response back to the client
     res.status(200).json({

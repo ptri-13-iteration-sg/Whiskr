@@ -18,6 +18,9 @@ const Login = () => {
         const googleLoginRes = await axios.post("/api/login/google", {
           token: tokenResponse.access_token,
         });
+        // attach google-generated jwt token to the localStorage
+        console.log('googleLogin testing jwt token to localStorage action: ', googleLoginRes.data);
+        setToken(googleLoginRes.data.token);
         navigate("/CatsCardsPage");
         // handle successful login here
       } catch (error) {

@@ -13,6 +13,7 @@ const getCardsRoutes = require("./routes/getCardsRoutes.js");
 const loginController = require("./controllers/loginController.js");
 const swipedRightRoutes = require("./routes/swipedRightRoutes.js");
 const logoutRoute = require("./routes/logoutRoute.js");
+const axios = require('axios');
 
 dotenv.config(); // NOTE Line 2
 const app = express();
@@ -37,6 +38,32 @@ app.use(
     origin: "http://localhost:3000",
   })
 );
+
+app.use((req, res, next) => {
+  console.log('Incoming request:', req.method, req.path);
+  next();
+});
+
+app.post('/api/login/google', async (req, res) => {
+  console.log('entered google callback');
+  try {
+    console.log('this is our req.body before accessToken initialization: ', req.body);
+    // Assuming accessToken is obtained after the user logs in with OAuth
+    const accessToken = req.body.token;
+    console.log('is this our access token? ', accessToken);
+
+    // Use the access token to request user information from Google
+    const response = await axios.get('https://www.googleapis.com/oauth2/v1/userinfo', {
+      headers: { Authorization: `Bearer ${accessToken}` }
+    });
+    // console.log(response);
+
+  } catch (error) {
+    // Handle errors, e.g., token expired, network issues, etc.
+    console.error('Error fetching user data:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
 const MONGO_URI = process.env.MONGO_URI;
 console.log(

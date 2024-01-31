@@ -11,13 +11,44 @@ const Home = () => {
 
   const navigate = useNavigate();
   // generating login button for Google
-  const googleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
+  // const googleLogin = useGoogleLogin({
+  //   console: console.log('test'),
+  //   onSuccess: async (tokenResponse) => {
+  //     try {
+  //       const googleLoginRes = await axios.post("/api/login/google", {
+  //         token: tokenResponse.access_token,
+  //       });
+  //       // attach google-generated jwt token to the localStorage
+  //       console.log('googleLogin testing jwt token to localStorage action: ', googleLoginRes.data);
+  //       setToken(googleLoginRes.data.token);
+  //       navigate("/CatsCardsPage");
+  //       // handle successful login here
+  //     } catch (error) {
+  //       // Handle errors
+  //       console.error("Error from googleLogin:", error);
+  //       // Check if the error response has the expected format
+  //       if (error.response && error.response.data) {
+  //         setErr(error.response.data);
+  //       } else {
+  //         // If the error format is not as expected, use a generic message
+  //         setErr("An error occurred during the login process.");
+  //       }
+  //     }
+  //   },
+  // });
+  
+  const googleLogin = async () => {
       try {
+
+        // const response = await signIn();
+        const accessToken = req.body.token;
         const googleLoginRes = await axios.post("/api/login/google", {
-          token: tokenResponse.access_token,
+          token: accessToken,
         });
-        navigate('/CatsCardsPage')
+        // attach google-generated jwt token to the localStorage
+        console.log('googleLogin testing jwt token to localStorage action: ', googleLoginRes.data);
+        setToken(googleLoginRes.data.token);
+        navigate("/CatsCardsPage");
         // handle successful login here
       } catch (error) {
         // Handle errors
@@ -30,8 +61,7 @@ const Home = () => {
           setErr("An error occurred during the login process.");
         }
       }
-    },
-  });
+  };
 
   const [res, setRes] = useState(null);
   const [err, setErr] = useState(null);
