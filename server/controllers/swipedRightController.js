@@ -50,10 +50,12 @@ swipedRightController.checkLikes = async (req, res, next) => {
       console.log("  - Sender is an adopter");
       res.locals.senderProfileType = "adopter";
       res.locals.likedBack = foundAdopter.likes.includes(idRecipient) ? true : false;
+      res.locals.senderProfileMatches = foundAdopter.matches;
     } else if (foundCat) {
       console.log("  - Sender is a cat");
       res.locals.senderProfileType = "cat";
       res.locals.likedBack = foundCat.likes.includes(idRecipient) ? true : false;
+      res.locals.senderProfileMatches = foundCat.matches;
     } else {
       console.log("  - Sender DNE");
     }
@@ -165,8 +167,10 @@ swipedRightController.addMatch = async (req, res, next) => {
         res.locals.matches = updatedSender.matches;
         return next();
       }
+    } else {
+      res.locals.matches = res.locals.senderProfileMatches;
+      return next();
     }
-    return next();
   } catch (err) {
     return next(
       "Error in swipedRightController.checkLikesAdopter: " + JSON.stringify(err)

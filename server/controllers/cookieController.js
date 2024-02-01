@@ -12,10 +12,19 @@ cookieController.setCookie = async (req, res, next) => {
   console.log("  - set cookie req.body: ", req.body);
 
   try {
-    // const user = await model.User.findOne({ email });
-    // const userID = user._id.toString();
-    // console.log('* Setting cookie userID:', userID);
-    // res.cookie('id', userID);
+    // Get the user _id and send it to the frontend as a cookie
+    const foundAdopter = await model.Adopter.findOne({ email });
+    const foundCat = await model.Cat.findOne({ email });
+
+    if (foundAdopter) {
+      const adopterId = foundAdopter._id.toString();
+      res.cookie("id", adopterId);
+    } else if (foundCat) {
+      const catId = foundCat._id.toString();
+      res.cookie("id", catId);
+    }
+
+    // Create a JWT token and send it to the frontend via res.locals
     const token = jwt.sign({ email }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });

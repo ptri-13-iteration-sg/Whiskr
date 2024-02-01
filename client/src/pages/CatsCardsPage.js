@@ -2,14 +2,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-
 // Components
 import TinderCard from "react-tinder-card";
 import SideBar from "../components/SideBar.js";
 
 import ChatModal from "../components/ChatModal.jsx";
-import '../stylesheets/chatModal.scss';
-
+import "../stylesheets/chatModal.scss";
 
 const CatDashboard = () => {
   const [characters, setCharacters] = useState([]);
@@ -17,13 +15,33 @@ const CatDashboard = () => {
 
   const [chatModalOpen, setChatModalOpen] = useState(false);
 
-  const updateMatches = async () => {};
+  // Function to grab stored cookies
+  function getCookie(name) {
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.startsWith(name + "=")) {
+        return cookie.substring(name.length + 1);
+      }
+    }
+    return null;
+  }
 
-  const swiped = (direction, swipedProfileId) => {
+  const swiped = async (direction, swipedProfileId) => {
     console.log(`* Swiped ${direction} on ${swipedProfileId}`);
-      // if (direction === "right") {
-      //   updateLikesFindMatches(swipedProfileId);
-      // }
+    // If the user swipes right or up...
+    if (direction === "right" || direction === "up") {
+      // Create the data object we want to send to the backend
+      const swipeData = {
+        idSender: getCookie("id"),
+        idRecipient: swipedProfileId,
+      };
+      console.log("  - data obj to be sent to backend: ", swipeData);
+
+      const swipedRes = await axios.patch("api/swipedRight", swipeData);
+
+      console.log("  - matches: ", swipedRes.data);
+    }
     setLastDirection(direction);
   };
   const outOfFrame = (name) => {
@@ -43,14 +61,11 @@ const CatDashboard = () => {
     fetchData();
   }, []); // Empty dependency array ensures useEffect runs once after initial render
 
-  
   return (
     <div className="cards-page">
+      <ChatModal open={chatModalOpen} onClose={() => setChatModalOpen(false)} />
 
-      <ChatModal  open={chatModalOpen} onClose={()=>setChatModalOpen(false)}/>
-      
       <div className="card-container">
-              
         {characters.map((character) => (
           <TinderCard
             className="swipe"
@@ -82,7 +97,7 @@ const CatDashboard = () => {
         ))}
       </div>
 
-      <SideBar className="side-bar" setChatModalOpen={setChatModalOpen}/>
+      <SideBar className="side-bar" setChatModalOpen={setChatModalOpen} />
     </div>
   );
 };
