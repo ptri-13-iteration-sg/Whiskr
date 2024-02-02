@@ -74,6 +74,7 @@ const CardsDashboard = () => {
         const cardsData = await axios.post('api/getData/cards', getCardsInput);
         console.log('  - Cards fetched from db:', cardsData.data);
 
+        // Update state of characters to be the array of objects received from the server
         setCharacters(cardsData.data);
       } catch (error) {
         console.error('Error retrieving cats:', error);
