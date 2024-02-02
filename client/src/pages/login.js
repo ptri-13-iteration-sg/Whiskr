@@ -5,11 +5,9 @@ import useLocalState from "../utils/useLocalStorage";
 import axios from "axios";
 import { useGoogleLogin } from "@react-oauth/google";
 
-
 const Login = () => {
   const emailRef = useRef();
   const passwordRef = useRef();
-
 
   // generating login button for Google
   const googleLogin = useGoogleLogin({
@@ -92,9 +90,6 @@ const Login = () => {
       }
     }
   };
-  // useEffect(() => {
-  //   console.log("jwt token", token);
-  // }, [token]);
 
   return (
     <div className="login-page">
@@ -109,7 +104,6 @@ const Login = () => {
         <button className="google-login" onClick={() => googleLogin()}>
           Sign in with Google 🚀
         </button>
-
       </form>
       {res && <p className="response-text">{JSON.stringify(res)}</p>}
       {err && <p className="error-text">{err}</p>}

@@ -15,6 +15,8 @@ const CatDashboard = () => {
   const [chatModalOpen, setChatModalOpen] = useState(false);
   const [matches, setMatches] = useState([]);
 
+  const [roomId, setRoomId] = useState("1");
+
   // Function to grab stored cookies
   function getCookie(name) {
     const cookies = document.cookie.split(";");
@@ -83,7 +85,11 @@ const CatDashboard = () => {
 
   return (
     <div className="cards-page">
-      <ChatModal open={chatModalOpen} onClose={() => setChatModalOpen(false)} />
+      <ChatModal
+        open={chatModalOpen}
+        onClose={() => setChatModalOpen(false)}
+        roomId={roomId}
+      />
 
       <div className="card-container">
         {characters.map((character) => (
@@ -121,6 +127,7 @@ const CatDashboard = () => {
         className="side-bar"
         setChatModalOpen={setChatModalOpen}
         matches={matches}
+        setRoomId={setRoomId}
       />
     </div>
   );

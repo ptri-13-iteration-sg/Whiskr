@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import MatchesTab from "./MatchesTab.js";
 import MessagesTab from "./MessagesTab.js";
 
-const SideBar = ({ setChatModalOpen, matches }) => {
+const SideBar = ({ setChatModalOpen, matches, setRoomId }) => {
   // track state of matches tab and messages tab
   const [showMatchesTab, setShowMatchesTab] = useState(true);
   const [showMessagesTab, setShowMessagesTab] = useState(false);
@@ -21,16 +21,14 @@ const SideBar = ({ setChatModalOpen, matches }) => {
         >
           Matches
         </button>
-        <button
-          onClick={() => {
-            setShowMessagesTab(true);
-            setShowMatchesTab(false);
-          }}
-        >
-          Messages
-        </button>
       </div>
-      {showMatchesTab && <MatchesTab matches={matches} />}
+      {showMatchesTab && (
+        <MatchesTab
+          matches={matches}
+          setChatModalOpen={setChatModalOpen}
+          setRoomId={setRoomId}
+        />
+      )}
       {showMessagesTab && <MessagesTab setChatModalOpen={setChatModalOpen} />}
     </div>
   );
