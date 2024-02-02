@@ -1,12 +1,12 @@
 // Modules
-const router = require("express").Router();
-const path = require("path");
+const router = require('express').Router();
+const path = require('path');
 
 // Controller Files
-const swipedRightController = require("../controllers/swipedRightController.js");
+const swipedRightController = require('../controllers/swipedRightController.js');
 
 router.patch(
-  "/",
+  '/',
   swipedRightController.addLike,
   swipedRightController.checkLikes,
   swipedRightController.addMatch,

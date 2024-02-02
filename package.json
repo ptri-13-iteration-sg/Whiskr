@@ -1,7 +1,4 @@
 {
-  "prettier": {
-    "printWidth": 90
-  },
   "scripts": {
     "build": "webpack",
     "dev": "cross-env NODE_ENV=development concurrently \"nodemon --watch server ./server/server.js\" \"webpack serve --open\""

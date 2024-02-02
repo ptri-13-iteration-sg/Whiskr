@@ -1,4 +1,4 @@
-const model = require("../models/models.js");
+const model = require('../models/models.js');
 const swipedRightController = {};
 
 // Add sender's _id to recipient's likes
@@ -20,18 +20,18 @@ swipedRightController.addLike = async (req, res, next) => {
 
     // Whichever findOneAndUpdate does not return null is the profile type of the recipient
     if (adopter) {
-      console.log("  - Recipient is an adopter");
-      res.locals.recipientProfileType = "adopter";
+      console.log('  - Recipient is an adopter');
+      res.locals.recipientProfileType = 'adopter';
     } else if (cat) {
-      console.log("  - Recipient is a cat");
-      res.locals.recipientProfileType = "cat";
+      console.log('  - Recipient is a cat');
+      res.locals.recipientProfileType = 'cat';
     } else {
-      console.log("  - Recipient DNE");
+      console.log('  - Recipient DNE');
     }
 
     return next();
   } catch (err) {
-    return next("Error in swipedRightController.addLikeCat: " + JSON.stringify(err));
+    return next('Error in swipedRightController.addLikeCat: ' + JSON.stringify(err));
   }
 };
 
@@ -47,40 +47,40 @@ swipedRightController.checkLikes = async (req, res, next) => {
 
     // Whichever findOne does not return null is the profile type of the sender
     if (foundAdopter) {
-      console.log("  - Sender is an adopter");
-      res.locals.senderProfileType = "adopter";
+      console.log('  - Sender is an adopter');
+      res.locals.senderProfileType = 'adopter';
       res.locals.likedBack = foundAdopter.likes.includes(idRecipient) ? true : false;
       res.locals.senderProfileMatches = foundAdopter.matches;
     } else if (foundCat) {
-      console.log("  - Sender is a cat");
-      res.locals.senderProfileType = "cat";
+      console.log('  - Sender is a cat');
+      res.locals.senderProfileType = 'cat';
       res.locals.likedBack = foundCat.likes.includes(idRecipient) ? true : false;
       res.locals.senderProfileMatches = foundCat.matches;
     } else {
-      console.log("  - Sender DNE");
+      console.log('  - Sender DNE');
     }
 
     return next();
   } catch (err) {
     return next(
-      "Error in swipedRightController.checkLikesAdopter: " + JSON.stringify(err)
+      'Error in swipedRightController.checkLikesAdopter: ' + JSON.stringify(err)
     );
   }
 };
 
 // Update matches arrays for both sender and recipient
 swipedRightController.addMatch = async (req, res, next) => {
-  console.log("* Updating matches array for both sender & recipient...");
+  console.log('* Updating matches array for both sender & recipient...');
 
   try {
     const { idSender, idRecipient } = req.body;
 
-    console.log("  - res.locals.likedBack: ", res.locals.likedBack);
+    console.log('  - res.locals.likedBack: ', res.locals.likedBack);
 
     // If there is a mutual liking between sender and recipient...
     if (res.locals.likedBack) {
       // If the sender is an adopter...
-      if (res.locals.senderProfileType === "adopter") {
+      if (res.locals.senderProfileType === 'adopter') {
         // Create an object to represent the sender
         const foundAdopter = await model.Adopter.findOne({ _id: idSender });
         const senderObj = {
@@ -117,14 +117,14 @@ swipedRightController.addMatch = async (req, res, next) => {
           }
         );
 
-        console.log("  - my matches: ", updatedSender.matches);
+        console.log('  - my matches: ', updatedSender.matches);
 
         // Pass on matches to front end
         res.locals.matches = updatedSender.matches;
         return next();
 
         // If the sender is a cat...
-      } else if (res.locals.senderProfileType === "cat") {
+      } else if (res.locals.senderProfileType === 'cat') {
         // Create an object to represent the sender
         const foundCat = await model.Cat.findOne({ _id: idSender });
         const senderObj = {
@@ -161,7 +161,7 @@ swipedRightController.addMatch = async (req, res, next) => {
           }
         );
 
-        console.log("  - my matches: ", updatedSender.matches);
+        console.log('  - my matches: ', updatedSender.matches);
 
         // Pass on matches to front end
         res.locals.matches = updatedSender.matches;
@@ -173,7 +173,7 @@ swipedRightController.addMatch = async (req, res, next) => {
     }
   } catch (err) {
     return next(
-      "Error in swipedRightController.checkLikesAdopter: " + JSON.stringify(err)
+      'Error in swipedRightController.checkLikesAdopter: ' + JSON.stringify(err)
     );
   }
 };

@@ -1,45 +1,36 @@
 .overlay-chatmodal {
-   background-color: rgba(0, 0, 0, 0.9);
-   position: fixed;
-   width: 100vw;
-   height: 100vh;
-   z-index: 1;
+  background-color: rgba(0, 0, 0, 0.9);
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
 
-   display: flex;
-   justify-content: center;
-   align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #chat-container {
-   display: flex;
-   flex-direction: column;
-   align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-   width: 700px;
-   height: 750px;
-   background-color: grey;
-   border-radius: 8px;
+  width: 700px;
+  height: 750px;
+  background-color: grey;
+  border-radius: 8px;
 
-
-
-   #message-container {
-      width: 400px;
-      height: 400px;
-      background-color: wheat;
-   }
-   
-
-
+  #message-container {
+    width: 400px;
+    height: 400px;
+    background-color: wheat;
+  }
 }
 
 .msgBubble {
-   width: 70px;
-   height: 60px;
-   background-color: whitesmoke;
+  width: 70px;
+  height: 60px;
+  background-color: whitesmoke;
 
-   border-radius: 8px;
+  border-radius: 8px;
 }
-
-
-
-
