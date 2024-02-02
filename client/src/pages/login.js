@@ -3,7 +3,6 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useLocalState from '../utils/useLocalStorage';
 import axios from 'axios';
-import { useGoogleLogin } from '@react-oauth/google';
 
 const Login = () => {
   const emailRef = useRef();
@@ -54,12 +53,17 @@ const Login = () => {
           console.log('  - Navigating to /CreateAccountCat page...');
           navigate('/CreateAccountCat');
         }
+      } else {
+        // If they created an adopter or cat profile already, get account type and navigate them to cards page
+        const userAccountType = await axios.post(
+          'api/login/getAccountType',
+          userCredentials
+        );
+        console.log('  - User account type: ', userAccountType.data);
+        console.log('  - User has already created an adopter or cat profile');
+        console.log('  - Navigating to /CardsPage page...');
+        navigate('/CardsPage');
       }
-
-      // If they created an adopter or cat profile already, navigate them to cards page
-      console.log('  - User has already created an adopter or cat profile');
-      console.log('  - Navigating to /CardsPage page...');
-      navigate('/CatsCardsPage');
     } catch (error) {
       console.error('Error from server:', error);
       // Improved error handling here as well

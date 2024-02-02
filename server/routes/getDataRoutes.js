@@ -5,12 +5,8 @@ const path = require('path');
 // Controller Files
 const getDataController = require('../controllers/getDataController.js');
 
-router.get('/cats', getDataController.getCatsData, (req, res) => {
-  res.json(res.locals.cats);
-});
-
-router.get('/adopters', getDataController.getAdoptersData, (req, res) => {
-  res.json(res.locals.adopters);
+router.post('/cards', getDataController.getCardsData, (req, res) => {
+  res.json(res.locals.cards);
 });
 
 router.get('/matches', getDataController.getMatchesData, (req, res) => {

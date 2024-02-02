@@ -12,6 +12,7 @@ const CreateAccountCat = () => {
   const profilePicRef = useRef();
   const navigate = useNavigate();
 
+  // Function to handle login submit button
   const handleSubmit = async e => {
     e.preventDefault();
 
@@ -29,7 +30,7 @@ const CreateAccountCat = () => {
 
       if (catResponse) {
         console.log('* New cat profile created, _id: ', catResponse.data);
-        navigate('/AdopterCardsPage');
+        navigate('/CatCardsPage');
       }
     } catch (err) {
       console.log(err);

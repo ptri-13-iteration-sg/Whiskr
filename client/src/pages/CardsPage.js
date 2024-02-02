@@ -1,6 +1,7 @@
 // Modules
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Cookies from 'js-cookie'; // Import js-cookie library
 
 // Components
 import TinderCard from 'react-tinder-card';
@@ -9,7 +10,7 @@ import SideBar from '../components/SideBar.js';
 import ChatModal from '../components/ChatModal.jsx';
 import '../stylesheets/chatModal.scss';
 
-const CatDashboard = () => {
+const CardsDashboard = () => {
   // State
   const [characters, setCharacters] = useState([]);
   const [lastDirection, setLastDirection] = useState();
@@ -17,17 +18,8 @@ const CatDashboard = () => {
   const [matches, setMatches] = useState([]);
   const [roomId, setRoomId] = useState('1');
 
-  // Helper function to grab stored cookie by name
-  function getCookie(name) {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.startsWith(name + '=')) {
-        return cookie.substring(name.length + 1);
-      }
-    }
-    return null;
-  }
+  // Helper function to grab stored cookie by name using js-cookie
+  const getCookie = name => Cookies.get(name);
 
   // Swiping functionality
   const swiped = async (direction, swipedProfileId) => {
@@ -52,26 +44,37 @@ const CatDashboard = () => {
   // Fetch matches and card data everytime the page renders
   useEffect(() => {
     const fetchMatches = async () => {
+      console.log('* Fetching Matches...');
       try {
         // make GET request to /api/getData/matches to fetch matches
         const currentUserId = getCookie('id');
-        console.log('* Curren user id: ', currentUserId);
+        console.log('  - Curren user id: ', currentUserId);
         const matchesFromDb = await axios.get(
           `api/getData/matches?currentUserId=${currentUserId}`
         );
 
-        console.log('* Matches fetched from db: ', matchesFromDb.data);
+        console.log('  - Matches fetched from db: ', matchesFromDb.data);
         setMatches(matchesFromDb.data);
       } catch (error) {
         console.error('Error retrieving matches:', error);
       }
     };
     const fetchData = async () => {
+      console.log('* Fetching Cards...');
       try {
-        const response = await axios.get('api/getData/cats');
-        console.log('* Retrieved cats from db:', response.data);
+        const profileType = getCookie('accountType');
+        console.log('  - Account type of user from cookies: ', profileType);
 
-        setCharacters(response.data);
+        // Get account type of user
+        const getCardsInput = {
+          accountType: profileType,
+        };
+
+        // Make GET req to 'api/getData/cards', sending your account type to the server
+        const cardsData = await axios.post('api/getData/cards', getCardsInput);
+        console.log('  - Cards fetched from db:', cardsData.data);
+
+        setCharacters(cardsData.data);
       } catch (error) {
         console.error('Error retrieving cats:', error);
       }
@@ -130,4 +133,4 @@ const CatDashboard = () => {
   );
 };
 
-export default CatDashboard;
+export default CardsDashboard;
