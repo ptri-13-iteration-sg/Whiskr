@@ -10,14 +10,14 @@ import ChatModal from '../components/ChatModal.jsx';
 import '../stylesheets/chatModal.scss';
 
 const CatDashboard = () => {
+  // State
   const [characters, setCharacters] = useState([]);
   const [lastDirection, setLastDirection] = useState();
   const [chatModalOpen, setChatModalOpen] = useState(false);
   const [matches, setMatches] = useState([]);
-
   const [roomId, setRoomId] = useState('1');
 
-  // Function to grab stored cookies
+  // Helper function to grab stored cookie by name
   function getCookie(name) {
     const cookies = document.cookie.split(';');
     for (let i = 0; i < cookies.length; i++) {
@@ -29,6 +29,7 @@ const CatDashboard = () => {
     return null;
   }
 
+  // Swiping functionality
   const swiped = async (direction, swipedProfileId) => {
     console.log(`* Swiped ${direction} on ${swipedProfileId}`);
     // If the user swipes right or up...
@@ -39,21 +40,17 @@ const CatDashboard = () => {
         idRecipient: swipedProfileId,
       };
       console.log('  - data obj to be sent to backend: ', swipeData);
-
+      // Send data object to backend with a PATCH req and grab res
       const swipedRes = await axios.patch('api/swipedRight', swipeData);
-
       console.log('  - matches: ', swipedRes.data);
+      // Update state of matches with res
       setMatches(swipedRes.data);
     }
     setLastDirection(direction);
   };
 
-  const outOfFrame = name => {
-    console.log(`* ${name} left the screen!`);
-  };
-
+  // Fetch matches and card data everytime the page renders
   useEffect(() => {
-    // Use an async function inside useEffect to fetch data
     const fetchMatches = async () => {
       try {
         // make GET request to /api/getData/matches to fetch matches
@@ -83,6 +80,7 @@ const CatDashboard = () => {
     fetchData();
   }, []); // Empty dependency array ensures useEffect runs once after initial render
 
+  // Return component
   return (
     <div className='cards-page'>
       <ChatModal
@@ -97,7 +95,6 @@ const CatDashboard = () => {
             className='swipe'
             key={character.name}
             onSwipe={dir => swiped(dir, character._id)}
-            onCardLeftScreen={() => outOfFrame(character.name)}
           >
             <div className='card-contents'>
               <div

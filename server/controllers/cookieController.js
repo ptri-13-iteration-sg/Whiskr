@@ -48,6 +48,10 @@ cookieController.deleteCookie = async (req, res, next) => {
       httpOnly: true,
       expires: new Date(0),
     });
+    res.cookie('id', '', {
+      httpOnly: true,
+      expires: new Date(0),
+    });
     res.status(200).json({ message: 'User is logged out' });
   } catch (err) {
     handleServerError(res, err);
