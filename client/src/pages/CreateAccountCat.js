@@ -4,13 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const CreateAccountCat = () => {
+  const navigate = useNavigate();
+
+  // State
   const emailRef = useRef();
   const catNameRef = useRef();
   const catBreedRef = useRef();
   const catAgeRef = useRef();
   const aboutMeRef = useRef();
   const profilePicRef = useRef();
-  const navigate = useNavigate();
 
   // Function to handle login submit button
   const handleSubmit = async e => {
@@ -37,6 +39,7 @@ const CreateAccountCat = () => {
     }
   };
 
+  // Return component
   return (
     <form className='create-profile-page' onSubmit={handleSubmit}>
       <h3>Create a profile for your cat!</h3>
@@ -71,18 +74,3 @@ const CreateAccountCat = () => {
 };
 
 export default CreateAccountCat;
-
-// Pet ID
-// 50881400
-// Pet type
-// Cat
-// Sex
-// Male
-// Age
-// 6 years old, Adult
-// Breed
-// Domestic Short Hair - Mixed breed
-// Size
-// Small, 15.44 pounds
-// Location
-// Foster

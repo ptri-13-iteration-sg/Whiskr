@@ -5,6 +5,8 @@ import useLocalState from '../utils/useLocalStorage';
 import axios from 'axios';
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const emailRef = useRef();
   const passwordRef = useRef();
 
@@ -13,8 +15,7 @@ const Login = () => {
   const [err, setErr] = useState(null);
   const [token, setToken] = useLocalState('', 'token');
 
-  const navigate = useNavigate();
-
+  // Handle loggin user in when login button clicked
   const handleSubmit = async e => {
     e.preventDefault();
 

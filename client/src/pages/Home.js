@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const navigate = useNavigate();
+
   // generating login button for Google
   const googleLogin = useGoogleLogin({
     onSuccess: async tokenResponse => {
@@ -36,6 +37,7 @@ const Home = () => {
   const [err, setErr] = useState(null);
   const [token, setToken] = useLocalState('', 'token');
 
+  // Return component
   return (
     <>
       <div className='slogan-signup-login-container'>
