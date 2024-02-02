@@ -30,7 +30,7 @@ const CreateAccountCat = () => {
 
       if (catResponse) {
         console.log('* New cat profile created, _id: ', catResponse.data);
-        navigate('/CatCardsPage');
+        navigate('/CardsPage');
       }
     } catch (err) {
       console.log(err);

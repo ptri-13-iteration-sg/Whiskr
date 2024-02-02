@@ -35,7 +35,7 @@ const CreateAccountAdopter = () => {
 
       if (adopterResponse) {
         console.log('* New adopter profile created, _id: ', adopterResponse.data);
-        navigate('/CatsCardsPage');
+        navigate('/CardsPage');
       }
     } catch (err) {
       console.log(err);
