@@ -1,29 +1,31 @@
-const model = require("../models/models.js");
+const model = require('../models/models.js');
 const getDataController = {};
 
 // Retrieve cat profiles from cat profiles db
-getDataController.getCatsData = async (req, res, next) => {
-  console.log("* Retrieving cat profiles from db...");
+getDataController.getCardsData = async (req, res, next) => {
+  console.log('* Retrieving adopter or cat profiles from db...');
 
   try {
-    const cats = await model.Cat.find();
-    res.locals.cats = cats;
+    // Access the userAccountType parameter from the query
+    const { accountType } = req.body;
+
+    console.log('  - Received accountType: ', req.body);
+
+    if (accountType === 'Adopter') {
+      console.log('  - User is an adopter');
+      const catData = await model.Cat.find();
+      console.log('  - Cat cards to be rendered: ', catData);
+      res.locals.cards = catData;
+    } else if (accountType === 'Cat') {
+      console.log('  - User is a cat owner');
+      const adopterData = await model.Adopter.find();
+      console.log('  - Adopter cards to be rendered: ', adopterData);
+      res.locals.cards = adopterData;
+    }
+
     return next();
   } catch (err) {
-    return next("Error in getDataController.getCatsData: " + JSON.stringify(err));
-  }
-};
-
-// Retrieve adopter profiles from adopter profiles db
-getDataController.getAdoptersData = async (req, res, next) => {
-  console.log("* Retrieving adopter profiles from db...");
-
-  try {
-    const adopters = await model.Adopter.find();
-    res.locals.adopters = adopters;
-    return next();
-  } catch (err) {
-    return next("Error in getDataController.getAdoptersData: " + JSON.stringify(err));
+    return next('Error in getDataController.getCatsData: ' + JSON.stringify(err));
   }
 };
 
@@ -37,9 +39,15 @@ getDataController.getMatchesData = async (req, res, next) => {
     const foundAdopter = await model.Adopter.findOne({ _id: currentUserId });
     const foundCat = await model.Cat.findOne({ _id: currentUserId });
 
+    if (foundAdopter) {
+      // console.log('  - Found Adopter: ', foundAdopter);
+    } else if (foundCat) {
+      // console.log(' - Found Cat: ', foundCat);
+    }
+
     res.locals.matches = foundAdopter ? foundAdopter.matches : foundCat.matches;
 
-    console.log("  - Matches found from db: ", res.locals.matches);
+    console.log('  - Matches found from db: ', res.locals.matches);
     return next();
   } catch (err) {
     return next(err);

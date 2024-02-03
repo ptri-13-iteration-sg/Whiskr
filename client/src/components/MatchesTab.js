@@ -1,15 +1,15 @@
 // Modules
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const MatchesTab = ({ matches, setChatModalOpen, setRoomId }) => {
   // const matchesMap = matches.map((ele))
 
   return (
-    <div className="matches-tab">
-      {matches.map((match) => (
+    <div className='matches-tab'>
+      {matches.map(match => (
         <div
-          className="matches"
+          className='matches'
           onClick={() => {
             setRoomId(match);
             setChatModalOpen(true);

@@ -1,7 +1,7 @@
 // Modules
-const bcrypt = require("bcryptjs");
-const dotenv = require("dotenv");
-const mongoose = require("mongoose");
+const bcrypt = require('bcryptjs');
+const dotenv = require('dotenv');
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 dotenv.config();
@@ -27,15 +27,15 @@ const userSchema = new Schema({
 });
 
 // Hash password before storing in User db...
-userSchema.pre("save", function (next) {
-  console.log("* Hashing password before adding user to db...");
+userSchema.pre('save', function (next) {
+  console.log('* Hashing password before adding user to db...');
   const user = this;
-  console.log("  - User password: ", user.password);
+  console.log('  - User password: ', user.password);
 
   bcrypt.hash(user.password, SALT_FACTOR, function (err, hash) {
     if (err) return next(err);
     user.password = hash;
-    console.log("  - Hashed user password: ", user.password);
+    console.log('  - Hashed user password: ', user.password);
     return next();
   });
 });
@@ -120,9 +120,9 @@ const matchesSchema = new Schema({
   imageUrl: { type: String },
 });
 
-const User = mongoose.model("User", userSchema);
-const Adopter = mongoose.model("Adopter", adopterSchema);
-const Cat = mongoose.model("Cat", catSchema);
-const Matches = mongoose.model("Matches", matchesSchema);
+const User = mongoose.model('User', userSchema);
+const Adopter = mongoose.model('Adopter', adopterSchema);
+const Cat = mongoose.model('Cat', catSchema);
+const Matches = mongoose.model('Matches', matchesSchema);
 
 module.exports = { User, Adopter, Cat, Matches };
