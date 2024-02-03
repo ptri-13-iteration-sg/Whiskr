@@ -1,8 +1,8 @@
 // Modules
-import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import useLocalState from "../utils/useLocalStorage";
+import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import useLocalState from '../utils/useLocalStorage';
 
 const Signup = () => {
   const emailRef = useRef();
@@ -12,11 +12,11 @@ const Signup = () => {
   // Response/error from server
   const [res, setRes] = useState(null);
   const [err, setErr] = useState(null);
-  const [token, setToken] = useLocalState("", "token");
+  const [token, setToken] = useLocalState('', 'token');
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
 
     const newUser = {
@@ -27,37 +27,37 @@ const Signup = () => {
 
     // Make POST request to Atlas DB to add new user
     try {
-      const userResponse = await axios.post("api/signup", newUser);
+      const userResponse = await axios.post('api/signup', newUser);
 
-      console.log("* New user profile created, _id: ", userResponse.data);
+      console.log('* New user profile created, _id: ', userResponse.data);
 
       setRes(`User ID Created: ${userResponse.data}.  Please proceed to log in page.`);
       setErr(null);
       setToken(userResponse.data.token);
     } catch (err) {
-      console.log("* Error from server: ", err.response.data);
+      console.log('* Error from server: ', err.response.data);
       setRes(null);
       setErr(err.response.data);
     }
   };
 
   return (
-    <div className="signup-page">
-      <form className="signup-form" onSubmit={handleSubmit}>
+    <div className='signup-page'>
+      <form className='signup-form' onSubmit={handleSubmit}>
         <h3>Sign up</h3>
 
-        <input type="email" placeholder="email" ref={emailRef} />
-        <input type="password" placeholder="password" ref={passwordRef} />
+        <input type='email' placeholder='email' ref={emailRef} />
+        <input type='password' placeholder='password' ref={passwordRef} />
         <select ref={profileTypeRef}>
-          <option value="Adopter">Adopt a cat</option>
-          <option value="Cat">Put a cat up for adoption</option>
+          <option value='Adopter'>Adopt a cat</option>
+          <option value='Cat'>Put a cat up for adoption</option>
         </select>
 
         <button>Register</button>
       </form>
 
-      {res && <p className="response-text">{JSON.stringify(res)}</p>}
-      {err && <p className="error-text">{err}</p>}
+      {res && <p className='response-text'>{JSON.stringify(res)}</p>}
+      {err && <p className='error-text'>{err}</p>}
     </div>
   );
 };

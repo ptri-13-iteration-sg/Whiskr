@@ -1,18 +1,18 @@
 // Modules
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 // Components
-import MatchesTab from "./MatchesTab.js";
-import MessagesTab from "./MessagesTab.js";
+import MatchesTab from './MatchesTab.js';
+import MessagesTab from './MessagesTab.js';
 
-const SideBar = ({setChatModalOpen}) => {
+const SideBar = ({ setChatModalOpen, matches, setRoomId }) => {
   // track state of matches tab and messages tab
   const [showMatchesTab, setShowMatchesTab] = useState(true);
   const [showMessagesTab, setShowMessagesTab] = useState(false);
 
   return (
-    <div className="side-bar">
-      <div className="match-msg-buttons">
+    <div className='side-bar'>
+      <div className='match-msg-buttons'>
         <button
           onClick={() => {
             setShowMatchesTab(true);
@@ -21,17 +21,15 @@ const SideBar = ({setChatModalOpen}) => {
         >
           Matches
         </button>
-        <button
-          onClick={() => {
-            setShowMessagesTab(true);
-            setShowMatchesTab(false);
-          }}
-        >
-          Messages
-        </button>
       </div>
-      {showMatchesTab && <MatchesTab />}
-      {showMessagesTab && <MessagesTab setChatModalOpen={setChatModalOpen}/>}
+      {showMatchesTab && (
+        <MatchesTab
+          matches={matches}
+          setChatModalOpen={setChatModalOpen}
+          setRoomId={setRoomId}
+        />
+      )}
+      {showMessagesTab && <MessagesTab setChatModalOpen={setChatModalOpen} />}
     </div>
   );
 };

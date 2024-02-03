@@ -1,16 +1,16 @@
-require("dotenv").config();
-const Profile = require("../models/models.js");
+require('dotenv').config();
+const Profile = require('../models/models.js');
 const loginController = {};
-const { OAuth2Client } = require("google-auth-library");
+const { OAuth2Client } = require('google-auth-library');
 const CLIENT_ID = process.env.CLIENT_ID;
 const client = new OAuth2Client(CLIENT_ID);
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-const { setJwtCookie, handleServerError } = require("../utils/functions.js");
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const { setJwtCookie, handleServerError } = require('../utils/functions.js');
 
 // Log in user
 loginController.verifyUser = async (req, res, next) => {
-  console.log("* Handling logging user in...");
+  console.log('* Handling logging user in...');
 
   try {
     const { email, password } = req.body;
@@ -18,21 +18,21 @@ loginController.verifyUser = async (req, res, next) => {
     // Handle missing fields
     if ((!email, !password)) {
       const missingFieldsErr = {
-        log: "Express error handler caught loginController.verifyUser error",
+        log: 'Express error handler caught loginController.verifyUser error',
         status: 400,
-        message: { err: "Missing required fields" },
+        message: { err: 'Missing required fields' },
       };
       return next(missingFieldsErr);
     }
 
     // Find user in db
     const foundUser = await Profile.User.findOne({ email: email });
-    if (foundUser) console.log("  - User found in db: ", foundUser);
+    if (foundUser) console.log('  - User found in db: ', foundUser);
     else {
       const userDneErr = {
-        log: "Express error handler caught loginController.verifyUser error",
+        log: 'Express error handler caught loginController.verifyUser error',
         status: 400,
-        message: { err: "Email does not exist in db" },
+        message: { err: 'Email does not exist in db' },
       };
       return next(userDneErr);
     }
@@ -40,16 +40,16 @@ loginController.verifyUser = async (req, res, next) => {
     // Compare user entered password w/ password in db
     const validPassword = await bcrypt.compare(password, foundUser.password);
     if (validPassword) {
-      console.log("  - Valid passowrd entered: ", foundUser.password);
+      console.log('  - Valid passowrd entered: ', foundUser.password);
       // Store email and account type to be passed on
       res.locals.userEmail = foundUser.email;
       res.locals.profileType = foundUser.profileType;
       return next();
     } else {
       const invalidPasswordErr = {
-        log: "Express error handler caught loginController.loginUser error",
+        log: 'Express error handler caught loginController.loginUser error',
         status: 400,
-        message: { err: "Invalid password entered" },
+        message: { err: 'Invalid password entered' },
       };
       return next(invalidPasswordErr);
     }
@@ -58,11 +58,11 @@ loginController.verifyUser = async (req, res, next) => {
     //return next('Error in loginController.verifyUser: ' + JSON.stringify(err));
     //}
     //};
-    console.error("loginController.verifyUser: Error", err);
+    console.error('loginController.verifyUser: Error', err);
     next({
-      log: "loginController.verifyUser: Error occurred",
+      log: 'loginController.verifyUser: Error occurred',
       status: 500,
-      message: "An error occurred during the login process.",
+      message: 'An error occurred during the login process.',
     });
   }
 };
@@ -70,48 +70,48 @@ loginController.verifyUser = async (req, res, next) => {
 // Verify if the logged in user has an Adopter profile or Cat profile
 loginController.verifyAdopterOrCat = async (req, res, next) => {
   console.log(
-    "* Handling verifying if user has created an adopter profile or cat profile yet..."
+    '* Handling verifying if user has created an adopter profile or cat profile yet...'
   );
 
   try {
     const userEmail = res.locals.userEmail;
     const profileType = res.locals.profileType;
-    console.log("  - Seaching Adopter and Cat Profile DBs for: ", userEmail, profileType);
+    console.log('  - Seaching Adopter and Cat Profile DBs for: ', userEmail, profileType);
 
-    if (profileType === "Adopter") {
+    if (profileType === 'Adopter') {
       // Check the adopter profile db for the email
       const foundAdopter = await Profile.Adopter.findOne({ email: userEmail });
       if (foundAdopter) {
-        console.log("  - Profile found in Adopter profile db: ", foundAdopter);
+        console.log('  - Profile found in Adopter profile db: ', foundAdopter);
         res.locals.userLoginInfo = { hasAdopterOrCatProfile: true };
-        console.log("res.locals.userLoginInfo: ", res.locals.userLoginInfo);
+        console.log('res.locals.userLoginInfo: ', res.locals.userLoginInfo);
         return next();
       } else {
-        console.log("  - User has not created an Adopter profile");
+        console.log('  - User has not created an Adopter profile');
         res.locals.userLoginInfo = { hasAdopterOrCatProfile: false };
         return next();
       }
-    } else if (profileType === "Cat") {
+    } else if (profileType === 'Cat') {
       // Check the cat profile db for the email
       const foundCat = await Profile.Cat.findOne({ email: userEmail });
       if (foundCat) {
-        console.log("  - Profile found in Cat profile db: ", foundCat);
+        console.log('  - Profile found in Cat profile db: ', foundCat);
         res.locals.userLoginInfo = { hasAdopterOrCatProfile: true };
         return next();
       } else {
-        console.log("  - User has not created a Cat profile");
+        console.log('  - User has not created a Cat profile');
         res.locals.userLoginInfo = { hasAdopterOrCatProfile: false };
         return next();
       }
     }
   } catch (err) {
-    return next("Error in loginController.verifyAdopterOrCat: ", +JSON.stringify(err));
+    return next('Error in loginController.verifyAdopterOrCat: ', +JSON.stringify(err));
   }
 };
 
 // Get the account type of the user logging in
 loginController.getAccountType = async (req, res, next) => {
-  console.log("* Handling getting profile type of user...");
+  console.log('* Handling getting profile type of user...');
 
   try {
     const { email } = req.body;
@@ -121,22 +121,22 @@ loginController.getAccountType = async (req, res, next) => {
     res.locals.accountType = foundUser.profileType;
     return next();
   } catch (err) {
-    return next("Error in loginController.getAccountType: " + JSON.stringify(err));
+    return next('Error in loginController.getAccountType: ' + JSON.stringify(err));
   }
 };
 
 // Register adopter profile
 loginController.createAdopter = async (req, res, next) => {
-  console.log("* Handling creating an adopter profile for user...");
+  console.log('* Handling creating an adopter profile for user...');
 
   const { email, name, aboutMe, imageUrl, profession, experience } = req.body;
 
   // Handle missing fields - ignores missing imageUrl field
   if (!email || !name || !aboutMe || !profession || !experience) {
     const missingFieldsErr = {
-      log: "Express error handler caught loginController.createAdopter error",
+      log: 'Express error handler caught loginController.createAdopter error',
       status: 400,
-      message: { err: "Missing required fields" },
+      message: { err: 'Missing required fields' },
     };
     return next(missingFieldsErr);
   }
@@ -154,26 +154,26 @@ loginController.createAdopter = async (req, res, next) => {
 
     // Save adopter to 'adopters' db
     const registeredAdopter = await newAdopter.save();
-    console.log("* Adopter successfully saved to db: ", registeredAdopter);
+    console.log('* Adopter successfully saved to db: ', registeredAdopter);
     res.locals._id = registeredAdopter._id;
     return next();
   } catch (err) {
-    return next("Error in loginController.createAdopter: " + JSON.stringify(err));
+    return next('Error in loginController.createAdopter: ' + JSON.stringify(err));
   }
 };
 
 // Register cat profile
 loginController.createCat = async (req, res, next) => {
-  console.log("* Handling creating an cat profile for user...");
+  console.log('* Handling creating an cat profile for user...');
 
   const { email, name, breed, age, aboutMe, imageUrl } = req.body;
 
   // Handle missing fields - ignores missing imageUrl field
   if (!email || !name || !breed || !age || !aboutMe) {
     const missingFieldsErr = {
-      log: "Express error handler caught loginController.createCat error",
+      log: 'Express error handler caught loginController.createCat error',
       status: 400,
-      message: { err: "Missing required fields" },
+      message: { err: 'Missing required fields' },
     };
     return next(missingFieldsErr);
   }
@@ -191,16 +191,16 @@ loginController.createCat = async (req, res, next) => {
 
     // Save adopter to 'adopters' db
     const registeredCat = await newCat.save();
-    console.log("* Cat successfully saved to db: ", registeredCat);
+    console.log('* Cat successfully saved to db: ', registeredCat);
     res.locals._id = registeredCat._id;
     return next();
   } catch (err) {
-    return next("Error in loginController.createCat: " + JSON.stringify(err));
+    return next('Error in loginController.createCat: ' + JSON.stringify(err));
   }
 };
 
 loginController.verifyGoogleUser = async (req, res, next) => {
-  console.log("Entered verifyGoogleUser");
+  console.log('Entered verifyGoogleUser');
   try {
     const { token } = req.body; // Token received from the frontend
 
@@ -225,7 +225,7 @@ loginController.verifyGoogleUser = async (req, res, next) => {
 
     // Generate JWT Token for the user
     const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "24h",
+      expiresIn: '24h',
     });
 
     // Set the JWT as an HTTP-only cookie
@@ -233,7 +233,7 @@ loginController.verifyGoogleUser = async (req, res, next) => {
 
     // Send the response back to the client
     res.status(200).json({
-      message: "User logged in successfully",
+      message: 'User logged in successfully',
       user: {
         email: user.email,
         name: user.name,

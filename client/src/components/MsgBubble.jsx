@@ -1,9 +1,9 @@
-import React from "react";
+import React from 'react';
 
-const MsgBubble = ({msg}) => {
+const MsgBubble = ({msg, id}) => {
   if(!msg) return null;
     return(
-      <div className="msgBubble">
+      <div className="msgBubble" id={id}>
         {msg}
       </div>
     )
