@@ -11,7 +11,7 @@ const MatchesTab = ({ matches, setChatModalOpen, setRoomId }) => {
         <div
           className="matches"
           onClick={() => {
-            setRoomId(match.roomId);
+            setRoomId(match);
             setChatModalOpen(true);
           }}
         >
